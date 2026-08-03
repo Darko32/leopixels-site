@@ -72,6 +72,12 @@ git push
 Vercel builds and publishes within ~60 seconds. Any other branch produces a
 preview deployment on its own URL and does **not** touch leopixels.com.
 
+The Vercel project **must** use the Next.js framework preset with no Output
+Directory override. `vercel.json` pins `"framework": "nextjs"` for exactly that
+reason: this project was a hand-written `index.html` before it was a Next app,
+and under the old "Other" preset Vercel publishes `public/` as a plain static
+folder — which builds green and then 404s every route except `/preview/*`.
+
 ## ⛔ Before the real site launches
 
 - [ ] Set `indexable: true` in [content/site.ts](content/site.ts) — this one flag
