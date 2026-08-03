@@ -1,17 +1,62 @@
 # leopixels-site
 
-The Leo Pixels company website. Currently a placeholder.
+The Leo Pixels company website, plus the pipeline that builds client demo sites.
 
 - **Live:** https://leopixels.com
 - **Vercel project:** `leopixels-site` (team `leo-pixels`)
 - **Production branch:** `main` — every push here deploys to leopixels.com automatically
+- **Stack:** Next.js (App Router) · TypeScript · Tailwind v4 · next-intl (EN + MK)
+
+## Getting started
+
+```bash
+npm install
+npm run dev          # http://localhost:3000
+```
 
 ## Structure
 
 ```
-index.html     the entire site (inline CSS, no dependencies)
-vercel.json    security headers
-robots.txt     currently blocking all crawlers (placeholder)
+app/[locale]/        the marketing site — EN at /, MK at /mk
+demos/               one typed config per demo + the trades template
+  _template/         index.template.html — edit this to change ALL demo sites
+  <slug>/config.ts   a demo: case-study copy + site tokens, one file
+scripts/             render / build / export the demo sites
+messages/            en.json · mk.json — every string a visitor reads
+i18n/  lib/  content/  components/
+public/preview/      GENERATED demo sites, gitignored
+```
+
+## Demo sites
+
+A demo is one config file. The same artifact is built two ways:
+
+```bash
+npm run build:demos                      # → public/preview/<slug>/  (runs automatically on build)
+npm run demo:export <slug> -- --domain client.com --form-endpoint <url>
+                                         # → dist/clients/<slug>/    (the client's standalone site)
+```
+
+Demos are served at `leopixels.com/preview/<slug>`. They are blocked from search
+three ways — a `noindex` meta tag, `robots.ts`, and an `X-Robots-Tag` header in
+`vercel.json` — because a demo must never outrank the real business it was
+built for.
+
+**On purchase**, `demo:export` produces a folder that *is* the client's website:
+indexable, watermark-free, every path rooted at their own domain, with its own
+`robots.txt`, `sitemap.xml`, `vercel.json` and a handover README. Push it to a
+private repo, connect a Vercel project, point their DNS. The same command is the
+exit procedure — zip the folder and email it.
+
+**The build fails loudly if any `{{TOKEN}}` is unfilled.** That is deliberate: an
+unfilled token reaching a prospect is the exact failure this guards against.
+
+## Commands
+
+```bash
+npm run dev          npm run build        npm start
+npm run lint         npm run typecheck
+npm run build:demos  npm run demo:export
 ```
 
 ## Deploying
@@ -24,16 +69,24 @@ git commit -m "describe the change"
 git push
 ```
 
-Vercel builds and publishes within ~30 seconds. Any other branch produces a
+Vercel builds and publishes within ~60 seconds. Any other branch produces a
 preview deployment on its own URL and does **not** touch leopixels.com.
 
 ## ⛔ Before the real site launches
 
-- [ ] Remove `<meta name="robots" content="noindex, nofollow">` from `index.html`
-- [ ] Change `robots.txt` from `Disallow: /` to `Allow: /`
-
-Both are set deliberately so Google never indexes "Hello world" under the Leo
-Pixels brand. Forgetting to remove them means the real site never ranks.
+- [ ] Set `indexable: true` in [content/site.ts](content/site.ts) — this one flag
+      controls both the `noindex` meta tag and `robots.txt`. While it is `false`,
+      Google cannot index anything.
+- [ ] Set `WEB3FORMS_KEY` and `LEAD_NOTIFY_EMAIL` in Vercel, then **submit a real
+      test enquiry and confirm it arrives**. Until the key is set the form logs
+      an error and shows the visitor a fallback message rather than silently
+      dropping the lead.
+- [ ] Confirm the contact email in [content/site.ts](content/site.ts)
+- [ ] Capture demo screenshots into `public/demos/<slug>/{desktop,mobile}.webp`
+      (a designed placeholder renders until they exist)
+- [ ] Run PageSpeed on the deployed preview URL and fill the measured
+      `pagespeed` / `lcp` values in the demo config
+- [ ] Submit to Google Search Console
 
 ## Rollback
 

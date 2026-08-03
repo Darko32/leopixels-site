@@ -1,0 +1,206 @@
+@import 'tailwindcss';
+
+/* ==========================================================================
+   LeoPixels design tokens
+   Neutral ramp, radius, focus treatment and the reduced-motion reset are
+   inherited from the trades template so the marketing site and the sites it
+   sells feel made by the same hand. The type scale, spacing rhythm and accent
+   are deliberately different — see the plan's "Design direction".
+   ========================================================================== */
+
+@theme {
+  /* ---- colour ---- */
+  --color-canvas: #ffffff;
+  --color-canvas-alt: hsl(215 33% 97%);
+  --color-ink: hsl(220 24% 9%); /* full-bleed dark bands */
+  --color-ink-soft: hsl(218 22% 14%); /* raised surfaces on ink */
+  --color-text: hsl(215 28% 12%); /* headings on light */
+  --color-body: hsl(215 16% 34%); /* body copy on light */
+  --color-body-invert: hsl(215 18% 76%); /* body copy on ink */
+  --color-line: hsl(215 20% 89%);
+  --color-line-invert: hsl(215 18% 22%);
+  --color-accent: hsl(38 92% 50%); /* fills, rules, text on ink */
+  --color-accent-deep: hsl(32 90% 42%); /* accent text on white — contrast-safe */
+  --color-accent-wash: hsl(38 92% 96%);
+  --color-positive: hsl(152 55% 40%);
+
+  /* ---- type ----
+     One variable grotesk. The premium signal is the scale contrast
+     (5.5rem against 1.0625rem), not a second typeface. */
+  --font-sans:
+    var(--font-inter), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Arial,
+    sans-serif;
+
+  --text-display: clamp(2.75rem, 7vw, 5.5rem);
+  --text-display--line-height: 0.98;
+  --text-display--letter-spacing: -0.03em;
+  --text-display--font-weight: 800;
+
+  --text-h2: clamp(1.75rem, 4vw, 3rem);
+  --text-h2--line-height: 1.05;
+  --text-h2--letter-spacing: -0.025em;
+  --text-h2--font-weight: 700;
+
+  --text-h3: 1.25rem;
+  --text-h3--line-height: 1.3;
+  --text-h3--letter-spacing: -0.01em;
+  --text-h3--font-weight: 700;
+
+  --text-lead: 1.25rem;
+  --text-lead--line-height: 1.5;
+
+  --text-body: 1.0625rem;
+  --text-body--line-height: 1.65;
+
+  --text-eyebrow: 0.75rem;
+  --text-eyebrow--line-height: 1;
+  --text-eyebrow--letter-spacing: 0.12em;
+  --text-eyebrow--font-weight: 700;
+
+  /* ---- shape ---- */
+  --radius-card: 12px;
+  --radius-panel: 20px;
+
+  /* ---- measure ---- */
+  --container-wrap: 1140px; /* default content width */
+  --container-wide: 1320px; /* demo grid, full-bleed rows */
+
+  /* ---- motion ---- */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--color-canvas);
+    color: var(--color-body);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    color: var(--color-text);
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Inherited verbatim from the trades template. */
+  :focus-visible {
+    outline: 3px solid var(--color-accent-deep);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* Sticky header offset for in-page anchors. */
+  [id] {
+    scroll-margin-top: 6rem;
+  }
+
+  /* Skip link, ported from the trades template. */
+  .skip {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 300;
+    background: var(--color-ink);
+    color: var(--color-canvas);
+    padding: 12px 20px;
+    font-weight: 700;
+    border-radius: 0 0 var(--radius-card) 0;
+  }
+
+  .skip:focus {
+    left: 0;
+    top: 0;
+  }
+}
+
+/* ==========================================================================
+   Motion — editorial choreography, CSS-driven.
+   Elements start hidden and are revealed when <Reveal> adds .is-revealed.
+   Stagger is driven by a --i custom property so a grid of cards costs no
+   extra JavaScript.
+   ========================================================================== */
+
+@layer utilities {
+  /* Every hidden-then-revealed rule is scoped to `.js`, which the inline
+     bootstrap in the layout sets before first paint. Without JavaScript the
+     class never lands, nothing is ever hidden, and the page reads normally. */
+  .js .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition:
+      opacity 0.5s var(--ease-out-expo),
+      transform 0.5s var(--ease-out-expo);
+    transition-delay: calc(var(--i, 0) * 80ms);
+    will-change: opacity, transform;
+  }
+
+  /* A single <Reveal> can drive a whole section: the wrapper gets .is-revealed
+     and every descendant .reveal follows, staggered by its own --i. One
+     IntersectionObserver per section, not per element. */
+  .js .reveal.is-revealed,
+  .js .is-revealed .reveal {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Clip-reveal for display headings: the text rises out of its own box. */
+  .reveal-clip {
+    overflow: hidden;
+    display: block;
+  }
+
+  .js .reveal-clip > * {
+    display: block;
+    transform: translateY(100%);
+    transition: transform 0.6s var(--ease-out-expo);
+    transition-delay: calc(var(--i, 0) * 80ms);
+  }
+
+  .js .is-revealed .reveal-clip > *,
+  .js .reveal-clip.is-revealed > * {
+    transform: none;
+  }
+}
+
+/* The trades template's blanket rule, ported verbatim. Everything above is
+   decoration — none of it may run for someone who has asked it not to. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .js .reveal,
+  .js .reveal-clip > * {
+    opacity: 1 !important;
+    transform: none !important;
+    transition-delay: 0ms !important;
+  }
+}

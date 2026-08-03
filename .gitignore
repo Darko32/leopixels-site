@@ -19,10 +19,17 @@ desktop.ini
 
 # Build output / deps
 node_modules/
+.next/
+out/
+next-env.d.ts
 dist/
 build/
 __pycache__/
 *.pyc
+
+# Generated demo sites. scripts/build-demos.ts renders these from demos/<slug>/config.ts
+# on every build, so the config is the only source of truth and there is no drift.
+public/preview/
 
 # Logs
 *.log

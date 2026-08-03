@@ -1,0 +1,297 @@
+{
+  "a11y": {
+    "skipToContent": "Skip to content",
+    "menu": "Menu",
+    "closeMenu": "Close menu",
+    "language": "Language",
+    "home": "LeoPixels — home",
+    "breadcrumb": "Breadcrumb"
+  },
+
+  "nav": {
+    "demos": "Demos",
+    "howItWorks": "How it works",
+    "pricing": "Pricing",
+    "faq": "FAQ"
+  },
+
+  "cta": {
+    "freeDemo": "Get my free demo",
+    "freeDemoShort": "Free demo",
+    "seeDemos": "See the demos",
+    "viewCaseStudy": "View case study",
+    "openLiveDemo": "Open the live demo",
+    "emailUs": "Email us",
+    "allDemos": "View all demos",
+    "backToDemos": "All demos"
+  },
+
+  "trades": {
+    "all": "All",
+    "plumbing": "Plumbing",
+    "hvac": "HVAC",
+    "electrical": "Electrical",
+    "roofing": "Roofing",
+    "auto": "Auto repair"
+  },
+
+  "home": {
+    "meta": {
+      "title": "Websites for trades businesses — see yours before you pay",
+      "description": "One-page websites for plumbers, HVAC, electricians and roofers. We build a working demo of your site in 48 hours, free. $500 to build, $149 a month, and you own everything."
+    },
+
+    "hero": {
+      "eyebrow": "Websites for trades businesses",
+      "title": "See your new website before you pay anything.",
+      "lead": "We build fast one-page websites for plumbers, HVAC techs, electricians and roofers. Tell us your business and a working demo of your site is live within 48 hours — free, no card, no phone call.",
+      "badges": {
+        "one": "Live in 48 hours",
+        "two": "You own the domain and files",
+        "three": "$500 build · $149/month"
+      },
+      "frameCaption": "A real LeoPixels build. Open it and tap the phone number."
+    },
+
+    "proof": {
+      "demo": { "label": "48 hours", "detail": "From your details to a working demo you can open on your phone" },
+      "weight": { "label": "Under 50 KB", "detail": "One file, inline styles, no frameworks — it loads before they lose patience" },
+      "ownership": { "label": "You own it", "detail": "Your domain in your name, your files in your hands, any time you ask" },
+      "cancel": { "label": "Cancel any time", "detail": "No lock-in, no contract trap. Stay because it works, not because you're stuck" }
+    },
+
+    "demos": {
+      "eyebrow": "The work",
+      "title": "Open a demo. It's a real, working site.",
+      "lead": "These are complete builds, not mockups — tap the phone number, submit the quote form, run one through PageSpeed. Every demo is labelled as a sample build, because these are example businesses rather than clients.",
+      "empty": "The first demos are being built. Ask for one of your own in the meantime."
+    },
+
+    "roi": {
+      "eyebrow": "The arithmetic",
+      "title": "One Google Ads lead costs more than a month of this.",
+      "lead": "In the trades, a single lead through Google Ads runs somewhere between $100 and $250. This is $500 once, then $149 a month — hosting, your domain, every change you ask for, and the local SEO that gets you found in the first place.",
+      "point": "If it brings you two jobs in the first month, it has already paid for itself. After that it works twenty-four hours a day for about the price of one billable hour.",
+      "source": "Cost-per-lead range from WebFX 2026 home-services marketing benchmarks."
+    },
+
+    "included": {
+      "eyebrow": "What's on the page",
+      "title": "Everything a trades website needs. Nothing it doesn't.",
+      "lead": "Every build follows the same structure, because it is the structure that converts for emergency trades. Your content changes; the bones don't.",
+      "items": {
+        "call": {
+          "title": "Tap-to-call, everywhere",
+          "body": "Your phone number is the largest thing on the screen the moment the page opens, and it repeats in the header, hero, emergency bar, form and footer. One tap, no thinking."
+        },
+        "emergency": {
+          "title": "A 24/7 emergency bar",
+          "body": "A standing call-now band directly under the hero. For emergency trades it is consistently the highest-converting element on the whole page."
+        },
+        "services": {
+          "title": "Your actual services, named",
+          "body": "Six real jobs you perform, written the way a customer would search for them — not a generic list of categories that could belong to anyone."
+        },
+        "area": {
+          "title": "A service area that ranks",
+          "body": "The towns and neighbourhoods you cover, listed by name, plus a map. It is the most underused local-SEO asset on trades websites."
+        },
+        "form": {
+          "title": "A four-field quote form",
+          "body": "Name, phone, what they need, and an optional sentence. Every field past four costs you enquiries, so there aren't any."
+        },
+        "seo": {
+          "title": "Search groundwork built in",
+          "body": "One H1 naming your service and city, business schema with your hours and service area, real alt text, a sitemap. Done on every build, so it can't be forgotten."
+        }
+      }
+    },
+
+    "how": {
+      "eyebrow": "How it works",
+      "title": "Four steps. Live this week.",
+      "steps": {
+        "one": { "title": "Tell us about the business", "body": "Your trade, your town, your phone number. Two minutes, and we take the rest from your Google listing." },
+        "two": { "title": "We build your demo", "body": "A complete working site with your services, your area and your details. Free, and live within 48 hours." },
+        "three": { "title": "You look it over", "body": "Open it on your phone, tap through it, tell us what to change. Two rounds of revisions are included." },
+        "four": { "title": "It goes live on your domain", "body": "You register the domain in your name, we point it and hand you the files. Usually the same week." }
+      }
+    },
+
+    "pricing": {
+      "eyebrow": "Pricing",
+      "title": "$500 to build. $149 a month.",
+      "lead": "One price, stated plainly. No platform fee, no separate hosting bill, nothing that appears later.",
+      "buildLabel": "one-time build",
+      "monthlyLabel": "per month",
+      "includesHeading": "The monthly plan covers",
+      "includes": {
+        "one": "Hosting, SSL and your domain and DNS managed",
+        "two": "Unlimited small edits — text, photos, hours, contact details — in 24 to 48 hours",
+        "three": "Uptime monitoring and a monthly speed check",
+        "four": "A quarterly refresh so the site never goes stale",
+        "five": "No platform fee and no third-party hosting bill on top"
+      },
+      "note": "Cancel any time with 30 days' notice. You keep the domain and we send you the files."
+    },
+
+    "guarantee": {
+      "eyebrow": "The guarantee",
+      "title": "You own your domain. You own your files.",
+      "body": "The domain is registered in your name — we never hold it. If you ever want to leave, we send you the complete site files and you can host them anywhere. No contract trap, no hostage situation.",
+      "closing": "We would rather you stayed because the site is working."
+    },
+
+    "faq": {
+      "eyebrow": "Before you ask",
+      "title": "The questions we get most.",
+      "items": {
+        "wordOfMouth": {
+          "q": "I get all my work from word of mouth.",
+          "a": "That's the best kind, and this doesn't replace it. It catches the people who ask a neighbour for a plumber, then search your name to check you're real before they call. Right now they find nothing."
+        },
+        "noWebsite": {
+          "q": "I don't really need a website.",
+          "a": "Most people check Google before they pick up the phone. Without a site you lose them to whoever shows up first. The free demo shows you exactly what they would have seen."
+        },
+        "facebook": {
+          "q": "I already have a Facebook page.",
+          "a": "That's rented land. You don't own it, it barely shows up in search, and the platform can change or lose it tomorrow. Your own site is an asset you control."
+        },
+        "isAi": {
+          "q": "Is this AI? Is it just a template?",
+          "a": "AI-accelerated, yes — that's exactly why it can be live this week at this price. But it's built for your business specifically: your services, your photos, your town's search terms, and every build is finished and checked by hand."
+        },
+        "forever": {
+          "q": "$149 a month, forever?",
+          "a": "It covers your hosting, your domain, every change you want and keeping the site fast and findable. Most owners compare it to one hour of their own time. And you can cancel whenever you like."
+        },
+        "cancel": {
+          "q": "What happens if I cancel?",
+          "a": "You keep your domain, we send you the files, and we'll show you how to host them anywhere in about ten minutes. No exit fee and no argument."
+        },
+        "existing": {
+          "q": "I already have a website.",
+          "a": "Then open it on your phone and time it. If it's slow, hard to call from, or hasn't been touched since 2018, ask for the free demo and compare the two side by side. If yours wins, keep it."
+        },
+        "timeline": {
+          "q": "How fast can it actually be live?",
+          "a": "The demo is live within 48 hours of you asking. Once you approve it and the domain is sorted, the real site usually goes live the same week."
+        }
+      }
+    },
+
+    "finalCta": {
+      "eyebrow": "Free demo",
+      "title": "Get a free demo of your site.",
+      "lead": "Tell us the business and the town. We'll build a working demo and send you the link within 48 hours — no payment, no phone call, no obligation.",
+      "reassurance": "We reply to every enquiry within the hour during working hours."
+    }
+  },
+
+  "form": {
+    "business": { "label": "Business name", "placeholder": "Redline Plumbing & Drain" },
+    "trade": { "label": "What do you do?", "placeholder": "Choose your trade" },
+    "city": { "label": "Town or city", "placeholder": "Columbus, OH" },
+    "contact": { "label": "Email or phone", "placeholder": "How should we send the demo?" },
+    "submit": "Send me my free demo",
+    "submitting": "Sending…",
+    "privacyNote": "We use your details to build and send the demo. Nothing else, and we don't pass them on.",
+    "errors": {
+      "business": "Please tell us the business name.",
+      "trade": "Please pick a trade.",
+      "city": "Please tell us the town or city.",
+      "contact": "Please leave an email address or phone number so we can send the demo.",
+      "generic": "Something went wrong sending that. Please email us instead and we'll pick it up straight away."
+    }
+  },
+
+  "demosPage": {
+    "meta": {
+      "title": "Demo websites for trades businesses",
+      "description": "Working demo websites built for plumbing, HVAC and electrical businesses. Open any of them, tap the phone number, and see exactly what your own site would look like."
+    },
+    "eyebrow": "Demos",
+    "title": "Every demo, open to look at.",
+    "lead": "Complete working builds you can open, tap through and test. Each one is a sample business rather than a client, and is labelled that way.",
+    "filterLabel": "Filter demos by trade"
+  },
+
+  "caseStudy": {
+    "sampleBadge": "Sample build",
+    "sampleExplainer": "{business} is a sample business created to demonstrate this build. The details, including the phone number, are illustrative — it is not a real company or a client.",
+    "briefHeading": "The brief",
+    "highlightsHeading": "What's on the page",
+    "metricsHeading": "The numbers",
+    "metrics": {
+      "pagespeed": "PageSpeed, mobile",
+      "lcp": "Largest contentful paint",
+      "weight": "Page weight",
+      "buildTime": "Build time"
+    },
+    "screenshotsHeading": "Desktop and mobile",
+    "desktopAlt": "{business} demo site on a desktop screen",
+    "mobileAlt": "{business} demo site on a phone screen",
+    "englishNote": "The demo site itself is in English — it was built for a US business.",
+    "moreHeading": "More demos",
+    "ctaTitle": "Want one of these for your business?",
+    "ctaLead": "Same build, your trade, your town. Free demo in 48 hours."
+  },
+
+  "thanks": {
+    "meta": { "title": "Thanks — your demo is on its way" },
+    "eyebrow": "Got it",
+    "title": "Your demo is on its way.",
+    "lead": "We reply within the hour during working hours, and your demo will be live within 48 hours. It arrives as a link you can open on your phone.",
+    "nextHeading": "What happens next",
+    "steps": {
+      "one": "We look up your business and pull together your services, area and photos.",
+      "two": "We build the site and send you a link — usually well inside 48 hours.",
+      "three": "You tell us what to change. Nothing is owed unless you want to go live."
+    },
+    "browse": "While you wait, have a look at the other demos."
+  },
+
+  "privacy": {
+    "meta": { "title": "Privacy policy" },
+    "title": "Privacy policy",
+    "updated": "Last updated {date}",
+    "sections": {
+      "collect": {
+        "title": "What we collect",
+        "body": "Only what you type into the demo request form: your business name, trade, town, and an email address or phone number. There is no account, no tracking pixel from an ad network, and no newsletter list."
+      },
+      "use": {
+        "title": "What we do with it",
+        "body": "We use it to build your demo and to reply to you. That is the entire purpose. We do not sell it, rent it, or pass it to anyone else."
+      },
+      "keep": {
+        "title": "How long we keep it",
+        "body": "Enquiries stay in our email for as long as the conversation is useful. Ask us to delete yours and we will, usually the same day."
+      },
+      "analytics": {
+        "title": "Analytics",
+        "body": "We measure page speed and aggregate traffic through Vercel, which does not use cookies and does not build a profile of you or follow you between sites."
+      },
+      "contact": {
+        "title": "Getting in touch",
+        "body": "Questions about any of this, or a request to see or delete your data, go to {email}."
+      }
+    }
+  },
+
+  "footer": {
+    "blurb": "Fast one-page websites for local trades businesses. Built in days, owned by you.",
+    "navHeading": "Site",
+    "legalHeading": "Legal",
+    "privacy": "Privacy policy",
+    "languageLabel": "Language",
+    "colophon": "Built and maintained in Skopje, North Macedonia."
+  },
+
+  "notFound": {
+    "title": "That page doesn't exist.",
+    "lead": "The link may be out of date. The demos and the homepage are both a click away.",
+    "home": "Go to the homepage"
+  }
+}
