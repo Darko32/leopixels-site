@@ -32,7 +32,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
   return (
     <>
-      <Hero locale={locale} />
+      <Hero />
       <ProofStrip />
       <DemoShowcase locale={locale} />
       <RoiMath />

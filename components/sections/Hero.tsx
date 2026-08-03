@@ -1,87 +1,103 @@
+import { getImageProps } from 'next/image';
 import { getTranslations } from 'next-intl/server';
-import { getFeaturedDemos, localized } from '@/demos';
-import type { Locale } from '@/i18n/routing';
 import { Container } from '@/components/ui/Container';
 import { Reveal } from '@/components/ui/Reveal';
-import { Button, ExternalButton } from '@/components/ui/Button';
-import { BrowserFrame } from '@/components/ui/BrowserFrame';
+import { Button } from '@/components/ui/Button';
 import { DisplayHeading, Eyebrow, Lead } from '@/components/ui/Typography';
 import { CheckIcon } from '@/components/ui/icons';
-import { DemoScreenshot } from '@/components/demos/DemoScreenshot';
 
 /**
- * Dark band #1 of three. The demo screenshot reads as a lit object against the
- * ink, which is the strongest opening the page can make: proof above the fold,
+ * Below `sm` a dedicated portrait photo loads instead of the desktop landscape
+ * one. This is art direction, not a resize — a phone-shaped crop of a wide
+ * frame either loses the subject or has to be zoomed, so the two shots are
+ * genuinely different images and `<picture>` picks between them.
+ */
+const MOBILE_MEDIA = '(max-width: 639px)';
+
+/** Shared between both crops: both are the LCP element, both are full-bleed. */
+const heroImage = { alt: '', fill: true, priority: true, sizes: '100vw' } as const;
+
+/**
+ * Dark band #1 of three. A full-bleed photo of the trade the sites are built
+ * for, with the copy in the frame's negative space — proof of who this is for,
  * before a single claim has to be believed.
  */
-export async function Hero({ locale }: { locale: Locale }) {
+export async function Hero() {
   const t = await getTranslations('home.hero');
   const tCta = await getTranslations('cta');
 
-  const [lead] = getFeaturedDemos();
+  const {
+    props: { srcSet: mobileSrcSet },
+  } = getImageProps({ ...heroImage, src: '/images/hero-background-mobile.webp' });
+
+  const {
+    props: { srcSet: desktopSrcSet, ...imgProps },
+  } = getImageProps({ ...heroImage, src: '/images/hero-background.webp' });
 
   return (
-    <section className="bg-ink pb-[clamp(64px,9vw,110px)] pt-[clamp(56px,8vw,96px)] text-body-invert">
-      <Container size="wide">
-        <Reveal staggerChildren className="grid items-center gap-14 lg:grid-cols-[1.05fr_1fr] lg:gap-16">
-          <div className="flex flex-col gap-6">
-            <Eyebrow delay={0} tone="ink">
-              {t('eyebrow')}
-            </Eyebrow>
+    <section className="relative isolate flex min-h-[560px] items-center overflow-hidden bg-ink py-[clamp(72px,15vw,104px)] text-body-invert sm:min-h-[clamp(560px,72vw,660px)] lg:min-h-[clamp(630px,54.6vw,756px)] lg:py-[clamp(80px,9vw,104px)]">
+      <picture>
+        <source media={MOBILE_MEDIA} srcSet={mobileSrcSet} sizes="100vw" />
+        {/* Desktop crop is also the <img> fallback, so it keeps its own srcSet. */}
+        <img
+          {...imgProps}
+          srcSet={desktopSrcSet}
+          alt=""
+          className="object-cover object-right sm:object-[70%_center] lg:object-[100%_30%]"
+        />
+      </picture>
 
-            <DisplayHeading as="h1" delay={1} className="text-canvas">
-              {t('title')}
-            </DisplayHeading>
+      {/* Readability wash. Mobile runs it top-to-bottom because the copy spans
+          the full width there; from `sm` up it is anchored to the left so the
+          professional and their toolbox on the right stay unobscured. */}
+      <div
+        aria-hidden
+        className="absolute inset-0 bg-[linear-gradient(180deg,hsl(220_24%_5%/.62)_0%,hsl(220_24%_5%/.42)_35%,hsl(220_24%_5%/.32)_62%,hsl(220_24%_5%/.48)_100%)] sm:bg-[linear-gradient(100deg,hsl(220_24%_5%/.94)_0%,hsl(220_24%_5%/.82)_40%,hsl(220_24%_5%/.35)_68%,hsl(220_24%_5%/0)_88%)] lg:bg-[linear-gradient(100deg,hsl(220_24%_5%/.93)_0%,hsl(220_24%_5%/.78)_30%,hsl(220_24%_5%/.22)_58%,hsl(220_24%_5%/0)_72%)]"
+      />
 
-            <Lead delay={2} className="text-body-invert">
-              {t('lead')}
-            </Lead>
+      <Container size="wide" className="relative z-10">
+        <Reveal staggerChildren className="flex max-w-[540px] flex-col gap-6 lg:max-w-[62%]">
+          <Eyebrow delay={0} tone="ink">
+            {t('eyebrow')}
+          </Eyebrow>
 
-            <div className="reveal flex flex-wrap gap-3 pt-2" style={{ '--i': 3 } as React.CSSProperties}>
-              <Button href="/#get-a-demo" size="lg">
-                {tCta('freeDemo')}
-              </Button>
-              <Button href="/demos" variant="inverse" size="lg">
-                {tCta('seeDemos')}
-              </Button>
-            </div>
+          <DisplayHeading as="h1" delay={1} className="text-canvas">
+            {t('title')}
+          </DisplayHeading>
 
-            <ul
-              className="reveal flex flex-col gap-2.5 pt-3 sm:flex-row sm:flex-wrap sm:gap-x-7"
-              style={{ '--i': 4 } as React.CSSProperties}
+          <Lead delay={2} className="text-body-invert">
+            {t('lead')}
+          </Lead>
+
+          <div className="reveal flex flex-nowrap gap-2 pt-2 sm:gap-3" style={{ '--i': 3 } as React.CSSProperties}>
+            <Button
+              href="/#get-a-demo"
+              size="lg"
+              className="min-h-[44px] px-[10px] text-[14px] sm:min-h-[60px] sm:px-8 sm:text-base"
             >
-              {(['one', 'two', 'three'] as const).map((key) => (
-                <li key={key} className="flex items-center gap-2 text-[0.9375rem] font-semibold">
-                  <CheckIcon className="shrink-0 text-accent" width={17} height={17} />
-                  {t(`badges.${key}`)}
-                </li>
-              ))}
-            </ul>
+              {tCta('freeDemo')}
+            </Button>
+            <Button
+              href="/demos"
+              variant="inverse"
+              size="lg"
+              className="min-h-[44px] px-[10px] text-[14px] sm:min-h-[60px] sm:px-8 sm:text-base"
+            >
+              {tCta('seeDemos')}
+            </Button>
           </div>
 
-          {lead ? (
-            <div className="reveal flex flex-col gap-4" style={{ '--i': 3 } as React.CSSProperties}>
-              <BrowserFrame tone="ink" url={`leopixels.com/preview/${lead.slug}`}>
-                <DemoScreenshot
-                  demo={lead}
-                  alt={localized(lead.meta.screenshots.alt, locale)}
-                  priority
-                  sizes="(max-width: 1024px) 100vw, 620px"
-                />
-              </BrowserFrame>
-
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <p className="text-[0.8125rem] text-body-invert/80">{t('frameCaption')}</p>
-                <ExternalButton
-                  href={`/preview/${lead.slug}`}
-                  variant="inverse"
-                  className="min-h-[44px] px-4 text-[0.8125rem]"
-                >
-                  {tCta('openLiveDemo')}
-                </ExternalButton>
-              </div>
-            </div>
-          ) : null}
+          <ul
+            className="reveal flex flex-col gap-2.5 pt-3 sm:flex-row sm:flex-wrap sm:gap-x-7"
+            style={{ '--i': 4 } as React.CSSProperties}
+          >
+            {(['one', 'two', 'three'] as const).map((key) => (
+              <li key={key} className="flex items-center gap-2 text-[0.9375rem] font-semibold">
+                <CheckIcon className="shrink-0 text-accent" width={17} height={17} />
+                {t(`badges.${key}`)}
+              </li>
+            ))}
+          </ul>
         </Reveal>
       </Container>
     </section>

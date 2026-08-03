@@ -65,7 +65,7 @@ export default async function LocaleLayout({
   const nav = site.nav.map((item) => ({ href: item.href, label: t(item.key) }));
 
   return (
-    <html lang={locale} className={inter.variable}>
+    <html lang={locale} className={inter.variable} suppressHydrationWarning>
       {/* Bottom padding clears the sticky mobile CTA bar. */}
       <body className="pb-[60px] sm:pb-0">
         {/*
