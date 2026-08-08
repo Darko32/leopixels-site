@@ -35,7 +35,7 @@ export async function Hero() {
   } = getImageProps({ ...heroImage, src: '/images/hero-background.webp' });
 
   return (
-    <section className="relative isolate flex min-h-[560px] items-center overflow-hidden bg-ink py-[clamp(72px,15vw,104px)] text-body-invert sm:min-h-[clamp(560px,72vw,660px)] lg:min-h-[clamp(630px,54.6vw,756px)] lg:py-[clamp(80px,9vw,104px)]">
+    <section className="relative isolate flex min-h-[clamp(440px,118vw,560px)] items-center overflow-hidden bg-ink py-[clamp(48px,10vw,72px)] text-body-invert sm:min-h-[clamp(560px,72vw,660px)] sm:py-[clamp(72px,15vw,104px)] lg:min-h-[clamp(630px,54.6vw,756px)] lg:py-[clamp(80px,9vw,104px)]">
       <picture>
         <source media={MOBILE_MEDIA} srcSet={mobileSrcSet} sizes="100vw" />
         {/* Desktop crop is also the <img> fallback, so it keeps its own srcSet. */}
@@ -56,7 +56,7 @@ export async function Hero() {
       />
 
       <Container size="wide" className="relative z-10">
-        <Reveal staggerChildren className="flex max-w-[540px] flex-col gap-6 lg:max-w-[62%]">
+        <Reveal staggerChildren className="flex max-w-[540px] flex-col gap-4 sm:gap-6 lg:max-w-[62%]">
           <Eyebrow delay={0} tone="ink" style={{ fontSize: '18px' }}>
             {t('eyebrow')}
           </Eyebrow>
@@ -77,7 +77,7 @@ export async function Hero() {
             {t('lead')}
           </Lead>
 
-          <div className="reveal flex flex-nowrap gap-2 pt-2 sm:gap-3" style={{ '--i': 3 } as React.CSSProperties}>
+          <div className="reveal flex flex-nowrap gap-2 pt-1 sm:gap-3 sm:pt-2" style={{ '--i': 3 } as React.CSSProperties}>
             <Button
               href="/#get-a-demo"
               size="lg"
@@ -96,7 +96,7 @@ export async function Hero() {
           </div>
 
           <ul
-            className="reveal flex flex-col gap-2.5 pt-3 sm:flex-row sm:flex-wrap sm:gap-x-7"
+            className="reveal flex flex-col gap-2.5 pt-1.5 sm:flex-row sm:flex-wrap sm:gap-x-7 sm:pt-3"
             style={{ '--i': 4 } as React.CSSProperties}
           >
             {(['one', 'two', 'three'] as const).map((key) => (
