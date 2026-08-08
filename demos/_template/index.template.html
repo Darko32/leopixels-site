@@ -32,6 +32,9 @@
   --bg:#fff;
   --bg-alt:hsl(215 33% 97%);
   --radius:12px;
+  --radius-lg:16px;
+  --radius-ico:10px;
+  --pill:100px;
   --shadow:0 1px 3px hsl(215 25% 12% / .08), 0 8px 24px hsl(215 25% 12% / .06);
   --wrap:1140px;
   --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
@@ -94,9 +97,13 @@ section{padding:clamp(56px,8vw,88px) 0}
 .badges li{display:flex;align-items:center;gap:7px;font-size:.875rem;font-weight:600;color:hsl(215 18% 88%)}
 .badges svg{flex:0 0 auto;color:hsl(145 65% 55%)}
 /* hero card */
-.hero-card{background:#fff;border-radius:16px;padding:28px;box-shadow:0 20px 50px hsl(215 30% 5% / .4)}
+.hero-card{background:#fff;border-radius:var(--radius-lg);padding:28px;box-shadow:0 20px 50px hsl(215 30% 5% / .4)}
 .hero-card h2{font-size:1.25rem;margin-bottom:.25em}
 .hero-card .sub{font-size:.9375rem;margin-bottom:18px;color:var(--body)}
+.hero-card .btn{width:100%}
+/* `.hero p` would otherwise tint this light-on-white — it sits inside .hero
+   but on a white card, and the hours line has to stay readable. */
+.hero-card .form-note{margin-top:12px;color:var(--body)}
 
 /* emergency bar */
 .emg{background:var(--urgent);color:#fff;padding:16px 0}
@@ -113,7 +120,7 @@ section{padding:clamp(56px,8vw,88px) 0}
 .card:hover{box-shadow:var(--shadow);transform:translateY(-2px)}
 .card h3{margin-bottom:.4em}
 .card p{margin:0;font-size:.9375rem}
-.ico{width:46px;height:46px;border-radius:10px;background:var(--brand-light);color:var(--brand);display:grid;place-items:center;margin-bottom:16px}
+.ico{width:46px;height:46px;border-radius:var(--radius-ico);background:var(--brand-light);color:var(--brand);display:grid;place-items:center;margin-bottom:16px}
 
 /* why us */
 .why{background:var(--bg-alt)}
@@ -127,7 +134,7 @@ section{padding:clamp(56px,8vw,88px) 0}
 .area-wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px;align-items:start}
 @media(max-width:860px){.area-wrap{grid-template-columns:1fr}}
 .area-list{display:flex;flex-wrap:wrap;gap:9px;padding:0;margin:24px 0 0;list-style:none}
-.area-list li{background:var(--brand-light);color:var(--brand-dark);border-radius:100px;padding:7px 16px;font-size:.875rem;font-weight:600}
+.area-list li{background:var(--brand-light);color:var(--brand-dark);border-radius:var(--pill);padding:7px 16px;font-size:.875rem;font-weight:600}
 .map{border:0;width:100%;height:340px;border-radius:var(--radius);filter:grayscale(.15)}
 
 /* reviews */
@@ -136,8 +143,11 @@ section{padding:clamp(56px,8vw,88px) 0}
 .stars{color:hsl(42 96% 50%);font-size:1.5rem;letter-spacing:2px}
 .rating .score{font-size:2.25rem;font-weight:800;color:var(--ink);line-height:1}
 .rating .count{font-size:.9375rem}
-/* GOOGLE REVIEWS WIDGET MOUNT — never paste review text here. See 03_BUILD_SYSTEM.md §7 */
-#google-reviews{min-height:180px;display:grid;place-items:center;border:2px dashed var(--line);border-radius:var(--radius);padding:32px;text-align:center;font-size:.9375rem}
+.review{display:flex;flex-direction:column;gap:12px;margin:0;text-align:left}
+.review .stars{font-size:1.0625rem;letter-spacing:1px}
+.review blockquote{margin:0;font-size:.9375rem;color:var(--body)}
+.review figcaption{margin-top:auto;font-size:.875rem;font-weight:700;color:var(--ink)}
+.review figcaption span{display:block;font-weight:400;color:var(--body)}
 
 /* gallery */
 .gal{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
@@ -147,7 +157,10 @@ section{padding:clamp(56px,8vw,88px) 0}
 .quote{background:var(--ink);color:#fff}
 .quote h2{color:#fff}
 .quote .lead{color:hsl(215 18% 80%)}
-.form-card{background:#fff;border-radius:16px;padding:clamp(24px,4vw,38px);max-width:620px;margin:34px auto 0;box-shadow:0 20px 50px hsl(215 30% 5% / .35)}
+/* `.quote` sets color:#fff for the dark section; without resetting it here the
+   form note under the button renders white on the white card and the "Or call
+   <number>" prompt disappears at the primary conversion point. */
+.form-card{background:#fff;color:var(--body);border-radius:var(--radius-lg);padding:clamp(24px,4vw,38px);max-width:620px;margin:34px auto 0;box-shadow:0 20px 50px hsl(215 30% 5% / .35)}
 .field{margin-bottom:16px}
 .field label{display:block;font-size:.875rem;font-weight:700;color:var(--ink);margin-bottom:6px}
 .field input,.field select,.field textarea{width:100%;font-family:inherit;font-size:1rem;padding:13px 15px;border:1.5px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);transition:border-color .15s ease}
@@ -179,9 +192,198 @@ section{padding:clamp(56px,8vw,88px) 0}
   .mobile-bar .q{background:var(--brand)}
   body{padding-bottom:60px}
 }
+
+/* ═══════════════ LAYOUT VARIANTS ═══════════════════════════════════════════
+   Everything above is `classic` — the original build, and the default.
+   A variant re-composes the same DOM so two demos in the same product line do
+   not read as one site with the nouns swapped. Variants are a fixed menu, not
+   free rein: see LAYOUT_VARIANT in demos/_schema.ts for what they may and may
+   not touch. The DOM and the section order never change, so the conversion
+   invariants and the scan order in 03_BUILD_SYSTEM.md §3 survive every variant.
+   ────────────────────────────────────────────────────────────────────────── */
+
+/* ── voltage: squared, left-aligned, accent-rule ─────────────────────────── */
+.v-voltage{--radius:4px;--radius-lg:6px;--radius-ico:6px;--pill:5px}
+.v-voltage .hdr{border-bottom:2px solid var(--ink)}
+
+/* hero: art carries more of the frame, and the overlay falls top-to-bottom
+   rather than left-to-right because the content is one column, not two */
+.v-voltage .hero::before{opacity:.42}
+.v-voltage .hero::after{background:linear-gradient(178deg,hsl(215 32% 9% / .74) 0%,hsl(215 32% 9% / .9) 58%,hsl(215 32% 9% / .97) 100%)}
+.v-voltage .hero-grid{grid-template-columns:1fr;gap:34px}
+
+/* the floating hero card, restated as a full-width dispatch bar */
+.v-voltage .hero-card{display:flex;flex-wrap:wrap;align-items:center;gap:14px 26px;padding:20px 24px;border-left:5px solid var(--brand);box-shadow:0 12px 32px hsl(215 30% 5% / .32)}
+.v-voltage .hero-card h2{flex:0 0 auto;margin:0;font-size:1.0625rem}
+.v-voltage .hero-card .sub{flex:1 1 260px;margin:0}
+.v-voltage .hero-card .btn{width:auto;flex:0 0 auto}
+.v-voltage .hero-card .form-note{flex-basis:100%;margin:0;text-align:left}
+
+/* section headings run left, except the form — the conversion moment stays centred */
+.v-voltage main .center{text-align:left}
+.v-voltage main .center .lead{margin-inline:0}
+.v-voltage .quote .center{text-align:center}
+.v-voltage .quote .center .lead{margin-inline:auto}
+
+/* services: 3-up icon-tile cards become 2-up accent-rule rows */
+.v-voltage #services .grid{grid-template-columns:repeat(auto-fit,minmax(440px,1fr));gap:30px 40px}
+.v-voltage #services .card{display:grid;grid-template-columns:auto minmax(0,1fr);gap:2px 18px;background:transparent;border:0;border-left:3px solid var(--line);border-radius:0;padding:2px 0 2px 22px}
+.v-voltage #services .card:hover{box-shadow:none;transform:none;border-left-color:var(--brand)}
+.v-voltage #services .ico{grid-column:1;grid-row:1/span 2;width:40px;height:40px;margin:0}
+.v-voltage #services .card h3{grid-column:2;align-self:end;margin-bottom:0}
+.v-voltage #services .card p{grid-column:2;align-self:start}
+
+/* why us: the trust block becomes a dark band, numbers become amber keys */
+.v-voltage .why{background:var(--ink);color:hsl(215 18% 78%)}
+.v-voltage .why h2,.v-voltage .why h3{color:#fff}
+.v-voltage .why .eyebrow{color:hsl(var(--hue) 75% 64%)}
+.v-voltage .why-list{grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:26px 40px}
+.v-voltage .why-list p{color:hsl(215 16% 74%)}
+.v-voltage .why-list .n{border-radius:var(--radius);background:hsl(var(--hue) 80% 54%);color:hsl(var(--hue) 92% 11%)}
+
+/* reviews pick up the same left-rule language as the services rows */
+.v-voltage .rating{flex-direction:row;flex-wrap:wrap;align-items:baseline;gap:6px 12px}
+.v-voltage .review{border-left:3px solid hsl(var(--hue) 80% 54%)}
+
+/* the phone must stay the largest thing on a phone screen, variant or not */
+@media(max-width:640px){.v-voltage .hero-card .btn{width:100%}}
+
+/* ── climate: centred, soft, roomy ───────────────────────────────────────── */
+.v-climate{--radius:18px;--radius-lg:24px;--radius-ico:50%;--pill:100px}
+/* teal needs more depth than blue to clear 4.5:1 on white at the same
+   lightness — green carries most of the luminance. Derived, not hand-picked. */
+.v-climate{--brand:hsl(var(--hue) 90% 26%);--brand-dark:hsl(var(--hue) 92% 19%)}
+/* comfort reads as space: the whole page breathes wider than the other two */
+.v-climate section{padding:clamp(72px,10vw,124px) 0}
+.v-climate .lead{font-size:1.1875rem}
+
+/* hero: centred column, content pooled in a soft radial rather than a side wash */
+.v-climate .hero{padding:clamp(64px,10vw,120px) 0}
+.v-climate .hero::before{opacity:.34}
+.v-climate .hero::after{background:radial-gradient(125% 105% at 50% 38%,hsl(200 38% 13% / .58) 0%,hsl(205 40% 8% / .9) 62%,hsl(205 42% 6% / .97) 100%)}
+.v-climate .hero-grid{grid-template-columns:1fr;justify-items:center;text-align:center;gap:38px}
+.v-climate .hero p{margin-inline:auto}
+.v-climate .hero-cta{justify-content:center}
+.v-climate .badges{justify-content:center;gap:10px 26px}
+/* the hero card narrows to a centred call panel with a soft ring */
+.v-climate .hero-card{max-width:430px;width:100%;text-align:center;padding:26px 28px;box-shadow:0 18px 44px hsl(205 40% 4% / .42),0 0 0 6px hsl(0 0% 100% / .07)}
+.v-climate .hero-card .sub{margin-bottom:20px}
+
+/* services: 2-up horizontal tiles, big round icon beside the text */
+.v-climate #services .grid{grid-template-columns:repeat(auto-fit,minmax(430px,1fr));gap:22px}
+.v-climate #services .card{display:grid;grid-template-columns:auto minmax(0,1fr);gap:2px 20px;align-items:start;background:var(--bg-alt);border-color:transparent;padding:26px 28px}
+.v-climate #services .card:hover{background:#fff;border-color:var(--line)}
+/* white, not brand-light — the tile is already tinted and the two would merge */
+.v-climate #services .ico{grid-column:1;grid-row:1/span 2;width:58px;height:58px;margin:0;background:#fff}
+.v-climate #services .ico svg{width:30px;height:30px}
+.v-climate #services .card h3{grid-column:2;align-self:end;margin-bottom:.15em}
+.v-climate #services .card p{grid-column:2;align-self:start}
+
+/* why us: a tinted comfort strip, 4 across, centred, no numbered rail */
+.v-climate .why{background:var(--brand-light)}
+.v-climate .why-list{grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:34px 28px;margin-top:48px}
+.v-climate .why-list li{flex-direction:column;align-items:center;text-align:center;gap:16px}
+.v-climate .why-list .n{width:52px;height:52px;font-size:1.0625rem;background:#fff;color:var(--brand);box-shadow:0 6px 18px hsl(var(--hue) 60% 20% / .16)}
+
+/* area + reviews inherit the softer, roomier rhythm */
+.v-climate .area-wrap{gap:52px}
+.v-climate .map{height:400px}
+.v-climate .review{background:var(--bg);box-shadow:var(--shadow);border-color:transparent}
+
+/* ── ridgeline: image-led, banded, project-oriented ──────────────────────── */
+.v-ridgeline{--radius:8px;--radius-lg:10px;--radius-ico:6px;--pill:6px}
+/* green needs depth to clear 4.5:1 on white, same as teal did */
+.v-ridgeline{--brand:hsl(var(--hue) 70% 26%);--brand-dark:hsl(var(--hue) 74% 19%)}
+.v-ridgeline section{padding:clamp(60px,8.5vw,96px) 0}
+
+/* dark header — the only one of the four; it reads as one mass with the hero */
+.v-ridgeline .hdr{background:hsl(215 30% 9% / .96);border-bottom:1px solid hsl(0 0% 100% / .1)}
+.v-ridgeline .brand{color:#fff}
+.v-ridgeline .brand svg{color:hsl(var(--hue) 65% 55%)}
+.v-ridgeline .hdr-phone .lbl{color:hsl(215 14% 68%)}
+.v-ridgeline .hdr-phone .num{color:hsl(8 90% 64%)}
+
+/* hero: the photograph carries it. Content is bottom-anchored so the image
+   owns the upper two-thirds, and the headline is the largest thing on screen. */
+.v-ridgeline .hero{min-height:min(84vh,720px);display:grid;align-items:end;padding:clamp(96px,15vw,170px) 0 clamp(38px,4.5vw,54px)}
+.v-ridgeline .hero::before{opacity:.8}
+.v-ridgeline .hero::after{background:linear-gradient(to top,hsl(150 26% 5% / .93) 0%,hsl(150 24% 7% / .68) 42%,hsl(152 22% 10% / .2) 100%)}
+.v-ridgeline .hero-grid{grid-template-columns:1fr;gap:30px}
+.v-ridgeline .hero h1{font-size:clamp(2.4rem,7vw,4.25rem);max-width:17ch;margin-bottom:.3em}
+.v-ridgeline .hero p{max-width:56ch}
+/* the call card is seated flush on the hero's bottom edge as a glass storm bar,
+   handing straight off to the emergency bar below it */
+/* grid, not flex: the hours row has to span the full bar to carry its rule, and
+   a wrapped flex item with flex-basis:100% does not resolve against the
+   container's content box here — it lands at roughly half. `1 / -1` is exact. */
+.v-ridgeline .hero-card{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:13px 30px;padding:20px 26px;background:hsl(150 24% 10% / .82);backdrop-filter:blur(7px);border-top:3px solid var(--brand);box-shadow:none;margin-bottom:calc(-1 * clamp(38px,4.5vw,54px))}
+.v-ridgeline .hero-card h2{grid-column:1;margin:0;font-size:1.0625rem;color:#fff}
+.v-ridgeline .hero-card .sub{grid-column:2;margin:0;color:hsl(150 12% 78%)}
+.v-ridgeline .hero-card .btn{grid-column:3;width:auto}
+.v-ridgeline .hero-card .form-note{grid-column:1/-1;margin:0;padding-top:13px;border-top:1px solid hsl(0 0% 100% / .15);color:hsl(150 12% 70%);text-align:left}
+
+/* services: 6-column asymmetric grid of dark project tiles, glyph as watermark */
+.v-ridgeline #services .card{position:relative;overflow:hidden;background:var(--ink);border-color:transparent;color:hsl(150 10% 73%);padding:30px}
+.v-ridgeline #services .card:hover{transform:none;box-shadow:0 18px 40px hsl(215 30% 8% / .28)}
+.v-ridgeline #services .card h3{color:#fff;position:relative;z-index:1;max-width:22ch}
+.v-ridgeline #services .card p{position:relative;z-index:1}
+.v-ridgeline #services .ico{position:absolute;top:-18px;right:-18px;width:auto;height:auto;margin:0;background:transparent;border-radius:0;color:hsl(var(--hue) 62% 46% / .26)}
+.v-ridgeline #services .ico svg{width:112px;height:112px}
+/* the featured tile — the high-value job, not just the first one */
+.v-ridgeline #services .card:first-child{background:var(--brand)}
+.v-ridgeline #services .card:first-child{color:hsl(var(--hue) 45% 90%)}
+.v-ridgeline #services .card:first-child .ico{color:hsl(var(--hue) 60% 88% / .22)}
+@media(min-width:861px){
+  .v-ridgeline #services .grid{grid-template-columns:repeat(6,minmax(0,1fr));gap:18px}
+  .v-ridgeline #services .card:nth-child(1){grid-column:span 4}
+  .v-ridgeline #services .card:nth-child(2){grid-column:span 2}
+  .v-ridgeline #services .card:nth-child(3){grid-column:span 2}
+  .v-ridgeline #services .card:nth-child(4){grid-column:span 4}
+  .v-ridgeline #services .card:nth-child(5){grid-column:span 3}
+  .v-ridgeline #services .card:nth-child(6){grid-column:span 3}
+  .v-ridgeline #services .card:nth-child(1) h3{font-size:1.5rem;max-width:14ch}
+}
+
+/* why us, read as a process: a rule runs through the numbers left to right */
+.v-ridgeline .why{background:var(--bg);border-top:1px solid var(--line)}
+.v-ridgeline .why-list{gap:28px;margin-top:52px}
+.v-ridgeline .why-list li{flex-direction:column;align-items:flex-start;gap:16px;padding-right:20px}
+.v-ridgeline .why-list .n{position:relative;z-index:1;width:42px;height:42px;border-radius:50%;box-shadow:0 0 0 7px var(--bg)}
+@media(min-width:861px){
+  .v-ridgeline .why-list{position:relative;grid-template-columns:repeat(4,minmax(0,1fr))}
+  /* the rule runs centre-of-first to centre-of-last, not edge to edge, so it
+     terminates on step 4 instead of trailing off past it. 28px = the grid gap. */
+  .v-ridgeline .why-list::before{content:"";position:absolute;left:21px;right:calc((100% - 84px)/4 - 21px);top:20px;height:2px;background:var(--line)}
+}
+
+/* the gallery is the proof, so it gets a band and an asymmetric feature wall */
+.v-ridgeline #work{background:var(--bg-alt);border-block:1px solid var(--line)}
+@media(min-width:721px){
+  .v-ridgeline .gal{grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+  .v-ridgeline .gal img{aspect-ratio:4/3}
+  .v-ridgeline .gal img:nth-child(1){grid-column:span 2;grid-row:span 2;aspect-ratio:auto;height:100%}
+  .v-ridgeline .gal img:nth-child(4){grid-column:span 2}
+}
+
+.v-ridgeline .review{border-top:3px solid var(--brand)}
+
+/* quote: split two-column — argument on the left, form on the right */
+@media(min-width:901px){
+  .v-ridgeline .quote>.wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,520px);gap:clamp(36px,5vw,72px);align-items:center}
+  .v-ridgeline .quote .center{text-align:left}
+  .v-ridgeline .quote .center .lead{margin-inline:0}
+  .v-ridgeline .form-card{margin:0;max-width:none;width:100%}
+}
+
+/* the phone stays the largest thing on a phone screen, variant or not */
+@media(max-width:760px){
+  .v-ridgeline .hero-card{grid-template-columns:1fr}
+  .v-ridgeline .hero-card h2,.v-ridgeline .hero-card .sub,.v-ridgeline .hero-card .btn{grid-column:1}
+  .v-ridgeline .hero-card .btn{width:100%}
+}
 </style>
 </head>
-<body>
+<body class="v-{{LAYOUT_VARIANT}}">
 {{DEMO_BANNER}}
 <a class="skip" href="#main">Skip to content</a>
 
@@ -189,7 +391,7 @@ section{padding:clamp(56px,8vw,88px) 0}
 <header class="hdr">
   <div class="wrap hdr-in">
     <a class="brand" href="/">
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2 3 7v10l9 5 9-5V7l-9-5Zm0 2.3 6.8 3.8-6.8 3.8L5.2 8.1 12 4.3ZM5 9.7l6 3.4v6.6l-6-3.3V9.7Zm8 10V13.1l6-3.4v6.7l-6 3.3Z"/></svg>
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">{{LOGO_MARK}}</svg>
       {{BUSINESS_NAME}}
     </a>
     <div class="hdr-actions">
@@ -225,10 +427,10 @@ section{padding:clamp(56px,8vw,88px) 0}
         </ul>
       </div>
       <aside class="hero-card">
-        <h2>Need help right now?</h2>
+        <h2>{{HERO_CARD_TITLE}}</h2>
         <p class="sub">{{HERO_CARD_LINE}}</p>
-        <a class="btn btn-call" href="tel:{{PHONE_RAW}}" style="width:100%">Call {{PHONE_DISPLAY}}</a>
-        <p class="form-note" style="margin-top:12px">{{HOURS_SHORT}}</p>
+        <a class="btn btn-call" href="tel:{{PHONE_RAW}}">Call {{PHONE_DISPLAY}}</a>
+        <p class="form-note">{{HOURS_SHORT}}</p>
       </aside>
     </div>
   </div>
@@ -238,7 +440,7 @@ section{padding:clamp(56px,8vw,88px) 0}
 <div class="emg">
   <div class="wrap emg-in">
     <span class="pulse" aria-hidden="true"></span>
-    <span>24/7 Emergency {{TRADE}} — no overtime charges</span>
+    <span>{{EMERGENCY_LINE}}</span>
     <a href="tel:{{PHONE_RAW}}">{{PHONE_DISPLAY}}</a>
   </div>
 </div>
@@ -252,12 +454,12 @@ section{padding:clamp(56px,8vw,88px) 0}
       <p class="lead">{{SERVICES_INTRO}}</p>
     </div>
     <div class="grid g3" style="margin-top:44px">
-      <article class="card"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.3 7 13 7 13s7-7.7 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z"/></svg></div><h3>{{SERVICE_1_TITLE}}</h3><p>{{SERVICE_1_DESC}}</p></article>
-      <article class="card"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 2 4.1 13.4c-.4.5 0 1.3.7 1.3H11l-1 7.3 8.9-11.4c.4-.5 0-1.3-.7-1.3H12l1-7.3Z"/></svg></div><h3>{{SERVICE_2_TITLE}}</h3><p>{{SERVICE_2_DESC}}</p></article>
-      <article class="card"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 6h-3V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H4a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2ZM9 4h6v2H9V4Z"/></svg></div><h3>{{SERVICE_3_TITLE}}</h3><p>{{SERVICE_3_DESC}}</p></article>
-      <article class="card"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22 9 12 2 2 9v12h7v-7h6v7h7V9Z"/></svg></div><h3>{{SERVICE_4_TITLE}}</h3><p>{{SERVICE_4_DESC}}</p></article>
-      <article class="card"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 6a6 6 0 1 0 0 12 6 6 0 0 0 0-12Zm0 10a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm0-14 2 3h-4l2-3Zm0 20-2-3h4l-2 3ZM2 12l3-2v4l-3-2Zm20 0-3 2v-4l3 2Z"/></svg></div><h3>{{SERVICE_5_TITLE}}</h3><p>{{SERVICE_5_DESC}}</p></article>
-      <article class="card"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m21.7 18.6-8-8a5.5 5.5 0 0 0-6.9-6.9l3.2 3.2-2.4 2.4-3.2-3.2a5.5 5.5 0 0 0 6.9 6.9l8 8 2.4-2.4Z"/></svg></div><h3>{{SERVICE_6_TITLE}}</h3><p>{{SERVICE_6_DESC}}</p></article>
+      <article class="card"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">{{SERVICE_1_ICON}}</svg></div><h3>{{SERVICE_1_TITLE}}</h3><p>{{SERVICE_1_DESC}}</p></article>
+      <article class="card"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">{{SERVICE_2_ICON}}</svg></div><h3>{{SERVICE_2_TITLE}}</h3><p>{{SERVICE_2_DESC}}</p></article>
+      <article class="card"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">{{SERVICE_3_ICON}}</svg></div><h3>{{SERVICE_3_TITLE}}</h3><p>{{SERVICE_3_DESC}}</p></article>
+      <article class="card"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">{{SERVICE_4_ICON}}</svg></div><h3>{{SERVICE_4_TITLE}}</h3><p>{{SERVICE_4_DESC}}</p></article>
+      <article class="card"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">{{SERVICE_5_ICON}}</svg></div><h3>{{SERVICE_5_TITLE}}</h3><p>{{SERVICE_5_DESC}}</p></article>
+      <article class="card"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">{{SERVICE_6_ICON}}</svg></div><h3>{{SERVICE_6_TITLE}}</h3><p>{{SERVICE_6_DESC}}</p></article>
     </div>
   </div>
 </section>
@@ -296,19 +498,37 @@ section{padding:clamp(56px,8vw,88px) 0}
 
 <!-- ============ REVIEWS ============ -->
 <section class="reviews">
-  <div class="wrap center">
-    <span class="eyebrow">Reviews</span>
-    <h2>What {{CITY}} customers say</h2>
-    <div class="rating">
-      <span class="stars" aria-hidden="true">★★★★★</span>
-      <span class="score">{{STAR_RATING}}</span>
-      <span class="count">from {{REVIEW_COUNT}} Google reviews</span>
+  <div class="wrap">
+    <div class="center">
+      <span class="eyebrow">Reviews</span>
+      <h2>What {{CITY}} customers say</h2>
+      <div class="rating">
+        <span class="stars" aria-hidden="true">★★★★★</span>
+        <span class="score">{{STAR_RATING}}</span>
+        <span class="count">from {{REVIEW_COUNT}} Google reviews</span>
+      </div>
     </div>
-    <!-- ⚠ GOOGLE REVIEWS WIDGET MOUNT POINT.
-         NEVER paste review text into this file — reviews are owned by the reviewer
-         and Google's ToS restricts copying. Embed the official widget or obtain
-         written permission. See 03_BUILD_SYSTEM.md §7. -->
-    <div id="google-reviews">{{REVIEWS_WIDGET}}</div>
+    <!-- ⚠ These quotes come from demos/<slug>/config.ts and are the business's OWN
+         customers, used with permission. Never paste text out of a Google Business
+         Profile — a review belongs to the reviewer and Google's ToS restricts
+         copying it. See 03_BUILD_SYSTEM.md §7. -->
+    <div class="grid g3">
+      <figure class="card review">
+        <span class="stars" aria-hidden="true">★★★★★</span>
+        <blockquote>{{REVIEW_1_TEXT}}</blockquote>
+        <figcaption>{{REVIEW_1_NAME}}<span>{{REVIEW_1_AREA}}</span></figcaption>
+      </figure>
+      <figure class="card review">
+        <span class="stars" aria-hidden="true">★★★★★</span>
+        <blockquote>{{REVIEW_2_TEXT}}</blockquote>
+        <figcaption>{{REVIEW_2_NAME}}<span>{{REVIEW_2_AREA}}</span></figcaption>
+      </figure>
+      <figure class="card review">
+        <span class="stars" aria-hidden="true">★★★★★</span>
+        <blockquote>{{REVIEW_3_TEXT}}</blockquote>
+        <figcaption>{{REVIEW_3_NAME}}<span>{{REVIEW_3_AREA}}</span></figcaption>
+      </figure>
+    </div>
   </div>
 </section>
 

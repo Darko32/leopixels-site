@@ -172,5 +172,8 @@ hours and contact details are included in your monthly plan.
 - [ ] Replace the form endpoint and send a real test enquiry to confirm it arrives
 - [ ] Confirm the licence number in the footer is correct
 - [ ] Check the name, address and phone match your Google Business Profile exactly
+- [ ] Confirm the three reviews are your own customers' words, used with their
+      permission. Never paste text out of your Google Business Profile — the
+      review belongs to the person who wrote it.
 `;
 }

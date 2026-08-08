@@ -53,14 +53,22 @@ export function TradeFilter({
 
       <div
         className={cn(
-          'grid gap-6',
+          // items-stretch is the CSS grid default, named explicitly for the
+          // same reason as DemoGrid.tsx: equal card height relies on it plus
+          // DemoCard's own h-full.
+          'grid items-stretch gap-6',
           visible.length === 1 && 'grid-cols-1',
           visible.length === 2 && 'md:grid-cols-2',
           visible.length >= 3 && 'md:grid-cols-2 lg:grid-cols-3'
         )}
       >
         {visible.map((demo) => (
-          <div key={demo.id}>{demo.card}</div>
+          // min-w-0: without it, a card's unshrinkable content (e.g. the
+          // BrowserFrame URL) can force this grid item — and the whole track —
+          // wider than its column. See BrowserFrame.tsx / DemoCard.tsx.
+          <div key={demo.id} className="min-w-0">
+            {demo.card}
+          </div>
         ))}
       </div>
     </div>

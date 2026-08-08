@@ -46,7 +46,12 @@ export function BrowserFrame({
         {url ? (
           <span
             className={cn(
-              'ml-2 truncate rounded-full px-3 py-1 text-xs',
+              // min-w-0 overrides the flex item's default min-width:auto (its
+              // content's own intrinsic width) — without it, `truncate`'s
+              // white-space:nowrap gives this span an unshrinkable min-content
+              // size equal to the full URL, which forces every ancestor up to
+              // the grid track to grow with it instead of ever truncating.
+              'ml-2 min-w-0 flex-1 truncate rounded-full px-3 py-1 text-xs',
               tone === 'light' ? 'bg-canvas text-body/70' : 'bg-ink-soft text-body-invert/70'
             )}
           >

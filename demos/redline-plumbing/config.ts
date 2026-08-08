@@ -74,7 +74,7 @@ Structurally the page carries everything Google needs and nothing it does not: o
     // Only what has actually been measured. pagespeed and lcp stay undefined
     // until a real PageSpeed run against the deployed URL.
     metrics: {
-      weight: '44 KB',
+      weight: '54 KB',
       buildTime: 'Under 90 minutes',
     },
 
@@ -95,6 +95,9 @@ Structurally the page carries everything Google needs and nothing it does not: o
     TRADE_SERVICE: '24/7 Emergency Plumber',
     SCHEMA_TYPE: 'Plumber',
     BRAND_HUE: '214',
+    LAYOUT_VARIANT: 'classic',
+    LOGO_MARK:
+      '<path d="M12 2 3 7v10l9 5 9-5V7l-9-5Zm0 2.3 6.8 3.8-6.8 3.8L5.2 8.1 12 4.3ZM5 9.7l6 3.4v6.6l-6-3.3V9.7Zm8 10V13.1l6-3.4v6.7l-6 3.3Z"/>',
 
     CITY: 'Columbus',
     STATE: 'OH',
@@ -118,33 +121,46 @@ Structurally the page carries everything Google needs and nothing it does not: o
 
     HERO_SUBLINE:
       'Burst pipe at 2am? Drain backing up before guests arrive? We answer the phone 24 hours a day and quote the price before we start — no overtime surcharges, no surprises on the invoice.',
+    HERO_CARD_TITLE: 'Need help right now?',
     HERO_CARD_LINE: 'A real person answers every call — no automated menu, no callback queue.',
+    EMERGENCY_LINE: '24/7 Emergency Plumbing — no overtime charges',
 
-    BADGE_1: 'Licensed &amp; insured',
+    BADGE_1: 'Licensed & insured',
     BADGE_2: 'Upfront flat-rate pricing',
     BADGE_3: '18 years in Columbus',
 
     SERVICES_INTRO:
       'Residential and light commercial plumbing across the Columbus metro, from a leaking tap to a full repipe.',
 
-    SERVICE_1_TITLE: 'Emergency Leak &amp; Burst Pipe Repair',
+    SERVICE_1_TITLE: 'Emergency Leak & Burst Pipe Repair',
     SERVICE_1_DESC:
       'Burst or leaking pipe stopped, dried and repaired. We shut off, contain the damage and fix it in one visit wherever possible.',
-    SERVICE_2_TITLE: 'Drain Cleaning &amp; Unblocking',
+    SERVICE_1_ICON:
+      '<path d="M12 2a7 7 0 0 0-7 7c0 5.3 7 13 7 13s7-7.7 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z"/>',
+    SERVICE_2_TITLE: 'Drain Cleaning & Unblocking',
     SERVICE_2_DESC:
       'Kitchen, bathroom and main line blockages cleared with camera inspection so you see the actual cause, not just a guess.',
-    SERVICE_3_TITLE: 'Water Heater Repair &amp; Install',
+    SERVICE_2_ICON:
+      '<path d="M13 2 4.1 13.4c-.4.5 0 1.3.7 1.3H11l-1 7.3 8.9-11.4c.4-.5 0-1.3-.7-1.3H12l1-7.3Z"/>',
+    SERVICE_3_TITLE: 'Water Heater Repair & Install',
     SERVICE_3_DESC:
       'Tank and tankless units repaired, replaced and serviced. Same-day replacement on most common models held in stock.',
-    SERVICE_4_TITLE: 'Sewer Line &amp; Camera Inspection',
+    SERVICE_3_ICON:
+      '<path d="M20 6h-3V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H4a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2ZM9 4h6v2H9V4Z"/>',
+    SERVICE_4_TITLE: 'Sewer Line & Camera Inspection',
     SERVICE_4_DESC:
       'Root intrusion, collapses and recurring backups diagnosed on camera, with trenchless repair options where the line allows.',
-    SERVICE_5_TITLE: 'Fixture &amp; Faucet Replacement',
+    SERVICE_4_ICON: '<path d="M22 9 12 2 2 9v12h7v-7h6v7h7V9Z"/>',
+    SERVICE_5_TITLE: 'Fixture & Faucet Replacement',
     SERVICE_5_DESC:
       'Toilets, sinks, faucets, garbage disposals and shut-off valves supplied and fitted — or fitted from parts you already bought.',
-    SERVICE_6_TITLE: 'Repiping &amp; Water Line Work',
+    SERVICE_5_ICON:
+      '<path d="M12 6a6 6 0 1 0 0 12 6 6 0 0 0 0-12Zm0 10a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm0-14 2 3h-4l2-3Zm0 20-2-3h4l-2 3ZM2 12l3-2v4l-3-2Zm20 0-3 2v-4l3 2Z"/>',
+    SERVICE_6_TITLE: 'Repiping & Water Line Work',
     SERVICE_6_DESC:
       'Failing galvanized and polybutylene lines replaced with PEX or copper, planned around your household so the water is off for hours, not days.',
+    SERVICE_6_ICON:
+      '<path d="m21.7 18.6-8-8a5.5 5.5 0 0 0-6.9-6.9l3.2 3.2-2.4 2.4-3.2-3.2a5.5 5.5 0 0 0 6.9 6.9l8 8 2.4-2.4Z"/>',
 
     WHY_HEADING: 'Four reasons people call us back',
     WHY_1_TITLE: 'We actually answer at 3am',
@@ -175,8 +191,21 @@ Structurally the page carries everything Google needs and nothing it does not: o
 
     STAR_RATING: '4.9',
     REVIEW_COUNT: '214',
-    REVIEWS_WIDGET:
-      'Google reviews widget mounts here — live data, attributed. Never paste review text into the page.',
+
+    // Written for a fictional business. On a real client build these are replaced
+    // with that client's own customers, quoted with permission — see _schema.ts.
+    REVIEW_1_TEXT:
+      'Our water heater let go at six in the morning and Redline had someone here before eight. He shut everything down, showed me the corrosion on the old tank, and gave me a flat price for the replacement that never moved.',
+    REVIEW_1_NAME: 'Karen M.',
+    REVIEW_1_AREA: 'Upper Arlington',
+    REVIEW_2_TEXT:
+      'The kitchen line had backed up three times in a year. Redline ran a camera down it first and found roots in the main, which nobody else had bothered to check. Fixed properly this time.',
+    REVIEW_2_NAME: 'Tom B.',
+    REVIEW_2_AREA: 'Bexley',
+    REVIEW_3_TEXT:
+      'Called at 11pm on a Sunday with water coming through the ceiling. An actual plumber answered, talked me through where the shut-off valve was, and was at the house within the hour.',
+    REVIEW_3_NAME: 'Alicia D.',
+    REVIEW_3_AREA: 'Grandview Heights',
 
     GALLERY_1_ALT:
       'Redline Plumbing technician replacing a burst copper supply line in a Columbus basement',

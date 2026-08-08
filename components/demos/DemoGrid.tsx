@@ -27,14 +27,22 @@ export function DemoGrid({
     <Reveal
       staggerChildren
       className={cn(
-        'grid gap-6',
+        // items-stretch is the CSS grid default and thus redundant, but named
+        // explicitly here because equal card height depends on it: it's what
+        // makes every item in a row match the tallest one before DemoCard's
+        // own h-full fills that stretched box. See DemoCard.tsx.
+        'grid items-stretch gap-6',
         single && 'grid-cols-1',
         demos.length === 2 && 'md:grid-cols-2',
         demos.length >= 3 && 'md:grid-cols-2 lg:grid-cols-3'
       )}
     >
       {demos.map((demo, index) => (
-        <div key={demo.slug} className="reveal" style={{ '--i': index } as CSSProperties}>
+        <div
+          key={demo.slug}
+          className="reveal min-w-0"
+          style={{ '--i': index } as CSSProperties}
+        >
           <DemoCard
             demo={demo}
             locale={locale}

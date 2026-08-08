@@ -34,7 +34,15 @@ export async function DemoCard({
     <Link
       href={`/demos/${demo.slug}`}
       className={cn(
-        'group flex flex-col overflow-hidden rounded-panel border border-line bg-canvas',
+        // h-full + min-w-0: the card is a grid item in a row of siblings whose
+        // content length varies (a tagline can run 2–3x longer than another's —
+        // see redline-plumbing vs bighorn-roofing). The grid stretches this
+        // item's box to the row's tallest sibling automatically; h-full is what
+        // makes the visible card actually fill that box instead of only being
+        // as tall as its own content. min-w-0 is the matching width-side fix —
+        // without it a child's unshrinkable content (see BrowserFrame) can force
+        // this card, and the whole grid track, wider than its column.
+        'group flex h-full min-w-0 flex-col overflow-hidden rounded-panel border border-line bg-canvas',
         'transition-[transform,box-shadow] duration-200',
         'hover:-translate-y-0.5 hover:shadow-[0_1px_3px_hsl(215_25%_12%/.08),0_20px_48px_hsl(215_25%_12%/.12)]',
         isFeature && 'md:grid md:grid-cols-2 md:items-center md:gap-0'
@@ -64,11 +72,15 @@ export async function DemoCard({
           {demo.meta.isFictional ? <Badge tone="sample">{tCase('sampleBadge')}</Badge> : null}
         </div>
 
-        <h3 className={cn('text-h3 text-text', isFeature && 'md:text-h2')}>
+        <h3 className={cn('text-h3 text-text line-clamp-2', isFeature && 'md:text-h2')}>
           {demo.meta.business}
         </h3>
 
-        <p className={cn('text-body', isFeature && 'md:text-lead md:max-w-[42ch]')}>
+        {/* Clamped so a longer case-study tagline can't inflate every card in
+            its row — the row height already stretches to match it via h-full,
+            but the clamp keeps that stretch bounded and the top block's
+            rhythm consistent regardless of how long any one tagline runs. */}
+        <p className={cn('text-body line-clamp-2', isFeature && 'md:text-lead md:max-w-[42ch]')}>
           {localized(demo.meta.tagline, locale)}
         </p>
 
