@@ -74,65 +74,74 @@ export function Header({
   }, [open]);
 
   return (
-    <header
-      className={cn(
-        'sticky top-0 z-100 transition-[background-color,border-color,box-shadow] duration-200',
-        scrolled
-          ? 'border-b border-line bg-[hsl(0_0%_100%/.88)] backdrop-blur-lg'
-          : 'border-b border-transparent bg-canvas'
-      )}
-    >
-      <Container>
-        <div
-          className={cn(
-            'flex items-center justify-between gap-4 transition-[height] duration-200',
-            scrolled ? 'h-[58px]' : 'h-[70px]'
-          )}
-        >
-          <Link href="/" aria-label={homeLabel} className="shrink-0">
-            <Wordmark />
-          </Link>
-
-          <nav aria-label={menuLabel} className="hidden items-center gap-8 lg:flex">
-            {nav.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="text-[0.9375rem] font-semibold text-body transition-colors hover:text-text"
-              >
-                {item.label}
-              </Link>
-            ))}
-          </nav>
-
-          <div className="flex items-center gap-2">
-            <LocaleSwitcher active={locale} label={languageLabel} />
-
-            <Link
-              href="/#get-a-demo"
-              className="hidden min-h-[44px] items-center rounded-card bg-ink px-5 text-[0.9375rem] font-bold text-canvas transition-colors hover:bg-ink-soft sm:inline-flex"
-            >
-              {ctaLabel}
+    // No background/blur/transform classes on this element: a `backdrop-filter`
+    // here would make it the containing block for the `fixed` mobile panel
+    // below, collapsing that panel to the header's own (58–70px) box instead
+    // of the viewport once scrolled. The scroll-dependent chrome lives one
+    // level down instead, on a wrapper with no fixed-position descendants.
+    <header className="sticky top-0 z-100">
+      <div
+        className={cn(
+          'transition-[background-color,border-color,box-shadow] duration-200',
+          scrolled
+            ? 'border-b border-line bg-[hsl(0_0%_100%/.88)] backdrop-blur-lg'
+            : 'border-b border-transparent bg-canvas'
+        )}
+      >
+        <Container>
+          <div
+            className={cn(
+              'flex items-center justify-between gap-4 transition-[height] duration-200',
+              scrolled ? 'h-[58px]' : 'h-[70px]'
+            )}
+          >
+            <Link href="/#top" aria-label={homeLabel} className="shrink-0">
+              <Wordmark />
             </Link>
 
-            <button
-              type="button"
-              onClick={() => setOpen(true)}
-              aria-label={menuLabel}
-              aria-expanded={open}
-              className="-mr-2 inline-flex size-11 items-center justify-center rounded-card text-text lg:hidden"
-            >
-              <MenuIcon />
-            </button>
+            <nav aria-label={menuLabel} className="hidden items-center gap-8 lg:flex">
+              {nav.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="text-[0.9375rem] font-semibold text-body transition-colors hover:text-text"
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
+
+            <div className="flex items-center gap-2">
+              <LocaleSwitcher active={locale} label={languageLabel} />
+
+              <Link
+                href="/#get-a-demo"
+                className="hidden min-h-[44px] items-center rounded-card bg-ink px-5 text-[0.9375rem] font-bold text-canvas transition-colors hover:bg-ink-soft sm:inline-flex"
+              >
+                {ctaLabel}
+              </Link>
+
+              <button
+                type="button"
+                onClick={() => setOpen(true)}
+                aria-label={menuLabel}
+                aria-expanded={open}
+                className="-mr-2 inline-flex size-11 items-center justify-center rounded-card text-text lg:hidden"
+              >
+                <MenuIcon />
+              </button>
+            </div>
           </div>
-        </div>
-      </Container>
+        </Container>
+      </div>
 
       {open ? (
         <div className="fixed inset-0 z-200 bg-canvas lg:hidden">
           <Container>
             <div className="flex h-[70px] items-center justify-between">
-              <Wordmark />
+              <Link href="/#top" aria-label={homeLabel} onClick={() => setOpen(false)}>
+                <Wordmark />
+              </Link>
               <button
                 type="button"
                 onClick={() => setOpen(false)}

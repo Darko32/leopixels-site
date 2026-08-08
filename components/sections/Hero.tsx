@@ -57,11 +57,19 @@ export async function Hero() {
 
       <Container size="wide" className="relative z-10">
         <Reveal staggerChildren className="flex max-w-[540px] flex-col gap-6 lg:max-w-[62%]">
-          <Eyebrow delay={0} tone="ink">
+          <Eyebrow delay={0} tone="ink" style={{ fontSize: '18px' }}>
             {t('eyebrow')}
           </Eyebrow>
 
-          <DisplayHeading as="h1" delay={1} className="text-canvas">
+          <DisplayHeading
+            as="h1"
+            delay={1}
+            className="text-canvas"
+            style={{ 
+              fontSize: 'clamp(1.638rem, calc(3.99vw + 1.14px), 3.206rem)',
+              lineHeight: '1.3'
+             }}
+          >
             {t('title')}
           </DisplayHeading>
 

@@ -41,7 +41,7 @@ export async function FinalCta({ locale }: { locale: Locale }) {
           </p>
         </Reveal>
 
-        <Reveal className="rounded-panel bg-canvas p-7 shadow-[0_24px_60px_hsl(220_40%_2%/.4)] sm:p-9">
+        <Reveal className="rounded-panel bg-canvas px-4 py-5 shadow-[0_24px_60px_hsl(220_40%_2%/.4)] sm:p-7 md:p-9">
           <DemoRequestForm
             locale={locale}
             trades={TRADES.map((trade) => ({ value: trade, label: tTrades(trade) }))}

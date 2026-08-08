@@ -52,7 +52,7 @@ export function DemoRequestForm({
       </div>
 
       {state.message ? (
-        <p role="alert" className="rounded-card bg-[hsl(8_80%_95%)] px-4 py-3 text-[0.9375rem] font-semibold text-[hsl(8_72%_36%)]">
+        <p role="alert" className="rounded-card bg-[hsl(8_80%_95%)] px-2.5 py-2.5 text-[0.75rem] font-semibold text-[hsl(8_72%_36%)] sm:px-4 sm:py-3 sm:text-[0.9375rem]">
           {state.message}
         </p>
       ) : null}
@@ -69,7 +69,7 @@ export function DemoRequestForm({
       />
 
       <div className="flex flex-col gap-1.5">
-        <label htmlFor={fieldId('trade')} className="text-[0.875rem] font-bold text-text">
+        <label htmlFor={fieldId('trade')} className="text-[0.8125rem] font-bold text-text sm:text-[0.875rem]">
           {copy.trade.label}
         </label>
         <select
@@ -80,7 +80,7 @@ export function DemoRequestForm({
           aria-invalid={state.errors?.trade ? true : undefined}
           aria-describedby={state.errors?.trade ? errorId('trade') : undefined}
           className={cn(
-            'min-h-[52px] rounded-card border-2 bg-canvas px-4 text-base text-text',
+            'min-h-[46px] rounded-card border-2 bg-canvas px-2.5 text-[0.875rem] text-text sm:min-h-[52px] sm:px-4 sm:text-base',
             'transition-colors focus:border-accent-deep focus:outline-none',
             state.errors?.trade ? 'border-[hsl(8_72%_52%)]' : 'border-line'
           )}
@@ -122,12 +122,12 @@ export function DemoRequestForm({
       <button
         type="submit"
         disabled={pending}
-        className="mt-1 inline-flex min-h-[60px] items-center justify-center rounded-card bg-accent px-8 text-base font-bold text-ink transition-[transform,background-color] duration-150 hover:-translate-y-px hover:bg-accent-deep hover:text-canvas disabled:pointer-events-none disabled:opacity-70"
+        className="mt-1 inline-flex min-h-[46px] items-center justify-center rounded-card bg-accent px-4 text-[0.875rem] font-bold text-ink transition-[transform,background-color] duration-150 hover:-translate-y-px hover:bg-accent-deep hover:text-canvas disabled:pointer-events-none disabled:opacity-70 sm:min-h-[60px] sm:px-8 sm:text-base"
       >
         {pending ? copy.submitting : copy.submit}
       </button>
 
-      <p className="text-[0.8125rem] text-body">{copy.privacyNote}</p>
+      <p className="text-[0.75rem] text-body sm:text-[0.8125rem]">{copy.privacyNote}</p>
     </form>
   );
 }
@@ -153,7 +153,7 @@ function Field({
 }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="text-[0.875rem] font-bold text-text">
+      <label htmlFor={id} className="text-[0.8125rem] font-bold text-text sm:text-[0.875rem]">
         {label}
       </label>
       <input
@@ -166,7 +166,8 @@ function Field({
         aria-invalid={error ? true : undefined}
         aria-describedby={error ? errorId : undefined}
         className={cn(
-          'min-h-[52px] rounded-card border-2 bg-canvas px-4 text-base text-text placeholder:text-body/50',
+          'min-h-[46px] rounded-card border-2 bg-canvas px-2.5 text-[0.875rem] text-text placeholder:text-body/50',
+          'placeholder:text-[13.5px] sm:min-h-[52px] sm:px-4 sm:text-base sm:placeholder:text-base',
           'transition-colors focus:border-accent-deep focus:outline-none',
           error ? 'border-[hsl(8_72%_52%)]' : 'border-line'
         )}

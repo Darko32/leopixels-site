@@ -11,11 +11,14 @@ export function Eyebrow({
   delay,
   tone = 'light',
   className,
+  style,
 }: {
   children: ReactNode;
   delay?: number;
   tone?: 'light' | 'ink';
   className?: string;
+  /** Escape hatch for one-off overrides (e.g. a font-size bump on a single instance). */
+  style?: CSSProperties;
 }) {
   return (
     <p
@@ -26,7 +29,7 @@ export function Eyebrow({
         tone === 'light' ? 'text-accent-deep' : 'text-accent',
         className
       )}
-      style={stagger(delay)}
+      style={{ ...stagger(delay), ...style }}
     >
       {children}
     </p>
@@ -43,14 +46,17 @@ export function DisplayHeading({
   as: Tag = 'h2',
   delay,
   className,
+  style,
 }: {
   children: ReactNode;
   as?: ElementType;
   delay?: number;
   className?: string;
+  /** Escape hatch for one-off overrides (e.g. a font-size bump on a single instance). */
+  style?: CSSProperties;
 }) {
   return (
-    <Tag className={cn('text-display', className)}>
+    <Tag className={cn('text-display', className)} style={style}>
       <span className="reveal-clip" style={stagger(delay)}>
         <span>{children}</span>
       </span>
