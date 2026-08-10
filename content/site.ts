@@ -12,21 +12,33 @@ export const site = {
    *
    * While false, every marketing route carries `noindex, nofollow` and
    * robots.txt disallows everything — so a half-built page can never be indexed
-   * under the brand. Flip to true only after the QA gate passes, then submit
-   * the site to Google Search Console.
+   * under the brand.
    *
-   * The old placeholder site had the same guard as a hand-written meta tag; the
-   * README warned that forgetting to remove it means the real site never ranks.
-   * This is that guard, in one place instead of two files.
+   * OPEN as of launch. The QA gate has passed and the site is live, so this is
+   * true and the pages are crawlable. It stays here rather than being deleted
+   * because it is the only kill switch that closes the whole domain in one
+   * commit. Do not flip it back to false casually: dropping out of the index is
+   * fast, getting back in is not.
+   *
+   * `/preview/*` and `/thanks` are excluded independently of this flag and are
+   * unaffected by it.
    */
-  indexable: false,
+  indexable: true,
 
   // TODO(open item): confirm the real inbox before launch. Used in the footer,
   // the Organization schema and lead notifications.
-  email: 'hello@leopixels.com',
+  email: 'darko@leopixels.com',
 
   /** Where LeoPixels sells. Feeds Organization.areaServed — no fabricated local address. */
   areaServed: 'US',
+
+  /**
+   * ISO date the privacy policy text last changed. Rendered on the page and
+   * used as its sitemap `lastmod`, so the visible date and the crawler-facing
+   * one can never disagree — that inconsistency is exactly what gets a
+   * sitemap's dates discounted. Bump when the policy copy changes.
+   */
+  privacyUpdated: '2026-08-01',
 
   /** In-page anchors, in header-nav order. Labels come from messages nav.*. */
   nav: [

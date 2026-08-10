@@ -12,8 +12,12 @@ import { DisplayHeading } from '@/components/ui/Typography';
 
 const SECTIONS = ['collect', 'use', 'keep', 'analytics', 'contact'] as const;
 
-/** Bumped when the policy text changes, not on every deploy. */
-const LAST_UPDATED = new Date('2026-08-01T00:00:00Z');
+/**
+ * Bumped when the policy text changes, not on every deploy. Lives in
+ * content/site.ts because the sitemap uses the same date as this page's
+ * `lastmod`.
+ */
+const LAST_UPDATED = new Date(`${site.privacyUpdated}T00:00:00Z`);
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));

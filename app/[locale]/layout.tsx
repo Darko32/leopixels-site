@@ -36,8 +36,27 @@ export async function generateMetadata({
     metadataBase: new URL(site.url),
     title: { default: t('title'), template: `%s | ${site.name}` },
     description: t('description'),
-    // Held closed until the QA gate passes — see site.indexable.
-    robots: site.indexable ? undefined : { index: false, follow: false },
+    // Inherited by every marketing route in both locales, so /mk indexes on the
+    // same terms as /. Individual routes override it — /thanks opts itself out.
+    // The kill switch is site.indexable in content/site.ts.
+    robots: site.indexable
+      ? {
+          index: true,
+          follow: true,
+          googleBot: {
+            index: true,
+            follow: true,
+            // Full-size thumbnails in Search and Discover. Without it Google
+            // shows a small thumbnail or none — the demo screenshots are the
+            // whole pitch, so they need the large treatment.
+            'max-image-preview': 'large',
+            // Uncapped snippet length. The default cap truncates the offer
+            // mid-sentence in the SERP — "$500 to build, $149 a…".
+            'max-snippet': -1,
+            'max-video-preview': -1,
+          },
+        }
+      : { index: false, follow: false },
   };
 }
 

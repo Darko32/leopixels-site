@@ -80,7 +80,7 @@ folder — which builds green and then 404s every route except `/preview/*`.
 
 ## ⛔ Before the real site launches
 
-- [ ] Set `indexable: true` in [content/site.ts](content/site.ts) — this one flag
+- [x] Set `indexable: true` in [content/site.ts](content/site.ts) — this one flag
       controls both the `noindex` meta tag and `robots.txt`. While it is `false`,
       Google cannot index anything.
 - [ ] Set `WEB3FORMS_KEY` and `LEAD_NOTIFY_EMAIL` in Vercel, then **submit a real
@@ -92,7 +92,15 @@ folder — which builds green and then 404s every route except `/preview/*`.
       (a designed placeholder renders until they exist)
 - [ ] Run PageSpeed on the deployed preview URL and fill the measured
       `pagespeed` / `lcp` values in the demo config
-- [ ] Submit to Google Search Console
+- [ ] Submit to Google Search Console and Bing Webmaster Tools — **`sitemap.xml`
+      only**, never the children. It is a sitemap index and it carries
+      `sitemap-pages.xml` itself; submitting both counts every URL twice in the
+      coverage report.
+- [ ] Confirm `https://leopixels.com/preview/redline-plumbing` still responds
+      with `X-Robots-Tag: noindex, nofollow` (it comes from `vercel.json`, so it
+      only exists on a real deployment). Those demo sites are excluded by that
+      header, deliberately, instead of by `robots.txt` — see the note at the top
+      of [app/robots.txt/route.ts](app/robots.txt/route.ts).
 
 ## Rollback
 

@@ -27,6 +27,11 @@ build/
 __pycache__/
 *.pyc
 
+# TypeScript incremental build cache (tsconfig has `incremental: true`). Purely a
+# local speed-up for `npm run typecheck` — it regenerates itself and is machine-
+# specific, so committing it only produces diff noise on every build.
+*.tsbuildinfo
+
 # Generated demo sites. scripts/build-demos.ts renders these from demos/<slug>/config.ts
 # on every build, so the config is the only source of truth and there is no drift.
 public/preview/

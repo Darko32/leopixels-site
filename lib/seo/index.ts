@@ -31,13 +31,24 @@ export function ogLocale(locale: Locale): string {
  * hreflang for every route. Must be reciprocal — each language points at its
  * twin and back — or Google ignores the whole cluster. x-default goes to
  * English, the canonical language for the primary US audience.
+ *
+ * `locales` narrows the cluster to the languages a route actually exists in.
+ * Every marketing page today exists in both, so the default covers them; the
+ * parameter is what stops a future single-language route (an mk-only post, say)
+ * from advertising a twin that 404s. Used by the sitemap routes.
  */
-export function languageAlternates(path: string): Record<string, string> {
+export function languageAlternates(
+  path: string,
+  locales: readonly Locale[] = routing.locales
+): Record<string, string> {
   const alternates: Record<string, string> = {};
-  for (const locale of routing.locales) {
+  for (const locale of locales) {
     alternates[locale] = absoluteUrl(locale, path);
   }
-  alternates['x-default'] = absoluteUrl(routing.defaultLocale, path);
+  const fallback = locales.includes(routing.defaultLocale) ? routing.defaultLocale : locales[0];
+  if (fallback) {
+    alternates['x-default'] = absoluteUrl(fallback, path);
+  }
   return alternates;
 }
 
