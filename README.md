@@ -83,10 +83,14 @@ folder — which builds green and then 404s every route except `/preview/*`.
 - [x] Set `indexable: true` in [content/site.ts](content/site.ts) — this one flag
       controls both the `noindex` meta tag and `robots.txt`. While it is `false`,
       Google cannot index anything.
-- [ ] Set `WEB3FORMS_KEY` and `LEAD_NOTIFY_EMAIL` in Vercel, then **submit a real
+- [ ] Set `RESEND_API_KEY` and `LEAD_NOTIFY_EMAIL` in Vercel, then **submit a real
       test enquiry and confirm it arrives**. Until the key is set the form logs
       an error and shows the visitor a fallback message rather than silently
       dropping the lead.
+- [ ] Verify `leopixels.com` in Resend (DNS records) and set `LEAD_FROM_EMAIL` to
+      a branded sender. Until then the form falls back to Resend's sandbox
+      sender, which **only delivers to the Resend account owner's own address** —
+      so a test that "works" for you will not reach any other inbox.
 - [ ] Confirm the contact email in [content/site.ts](content/site.ts)
 - [ ] Capture demo screenshots into `public/demos/<slug>/{desktop,mobile}.webp`
       (a designed placeholder renders until they exist)

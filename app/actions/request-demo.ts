@@ -52,33 +52,44 @@ export async function requestDemo(
     return { status: 'error', errors, values };
   }
 
-  const accessKey = process.env.WEB3FORMS_KEY;
+  const apiKey = process.env.RESEND_API_KEY;
 
-  if (!accessKey) {
+  if (!apiKey) {
     // No provider configured yet. Log it rather than silently dropping the
     // lead — a form that quietly loses enquiries is worse than no form.
-    console.error('[demo-request] WEB3FORMS_KEY is not set. Lead not delivered:', values);
+    console.error('[demo-request] RESEND_API_KEY is not set. Lead not delivered:', values);
     return { status: 'error', message: t('generic'), values };
   }
 
   try {
-    const response = await fetch('https://api.web3forms.com/submit', {
+    const response = await fetch('https://api.resend.com/emails', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        access_key: accessKey,
-        subject: `Free demo request — ${values.business} (${values.city})`,
-        from_name: 'LeoPixels site',
+        // The sandbox sender works before leopixels.com is verified in Resend,
+        // but only delivers to the account owner. Set LEAD_FROM_EMAIL once the
+        // domain is verified.
+        from: process.env.LEAD_FROM_EMAIL ?? 'LeoPixels site <onboarding@resend.dev>',
         to: process.env.LEAD_NOTIFY_EMAIL ?? site.email,
-        business: values.business,
-        trade: values.trade,
-        city: values.city,
-        contact: values.contact,
-        reply_language: values.locale,
+        subject: `Free demo request — ${values.business} (${values.city})`,
+        // Only when they left an email. `contact` takes a phone number just as
+        // happily, and Resend rejects the whole send on a malformed reply_to.
+        ...(values.contact.includes('@') ? { reply_to: values.contact } : {}),
+        text: [
+          `Business: ${values.business}`,
+          `Trade: ${values.trade}`,
+          `City: ${values.city}`,
+          `Contact: ${values.contact}`,
+          `Reply in: ${values.locale}`,
+        ].join('\n'),
       }),
     });
 
-    if (!response.ok) throw new Error(`Web3Forms responded ${response.status}`);
+    if (!response.ok) {
+      // Carry the body, not just the status. A bare status code is what made
+      // the previous provider's refusal take a documentation dig to diagnose.
+      throw new Error(`Resend responded ${response.status}: ${await response.text()}`);
+    }
   } catch (error) {
     console.error('[demo-request] delivery failed:', error, values);
     return { status: 'error', message: t('generic'), values };
