@@ -162,10 +162,18 @@
     transform: none;
   }
 
-  /* Clip-reveal for display headings: the text rises out of its own box. */
+  /* Clip-reveal for display headings: the text rises out of its own box.
+     The heading line-heights (0.98–1.05) run tighter than this font's
+     natural ascent+descent box, so the last line's descenders (g, y, p…)
+     sit outside the line box and get cropped by this overflow mask.
+     padding-bottom reserves that room inside the clip region itself —
+     em-based so it scales with the clamp()'d font size at every
+     breakpoint, rather than a fixed height that only happens to work
+     for this string. */
   .reveal-clip {
     overflow: hidden;
     display: block;
+    padding-bottom: 0.15em;
   }
 
   .js .reveal-clip > * {
