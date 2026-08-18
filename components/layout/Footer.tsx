@@ -2,6 +2,7 @@ import { getTranslations } from 'next-intl/server';
 import { site } from '@/content/site';
 import { Link } from '@/i18n/navigation';
 import type { Locale } from '@/i18n/routing';
+import { navItems } from '@/lib/nav';
 import { Container } from '@/components/ui/Container';
 import { MailIcon } from '@/components/ui/icons';
 import { LocaleSwitcher } from './LocaleSwitcher';
@@ -29,7 +30,7 @@ export async function Footer({ locale }: { locale: Locale }) {
 
           <nav aria-label={t('navHeading')} className="flex flex-col gap-3">
             <h2 className="text-eyebrow uppercase text-canvas">{t('navHeading')}</h2>
-            {site.nav.map((item) => (
+            {navItems().map((item) => (
               <Link key={item.href} href={item.href} className="text-[0.9375rem] hover:text-canvas">
                 {tNav(item.key)}
               </Link>

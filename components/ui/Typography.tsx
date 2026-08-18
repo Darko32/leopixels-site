@@ -47,6 +47,7 @@ export function DisplayHeading({
   delay,
   className,
   style,
+  lang,
 }: {
   children: ReactNode;
   as?: ElementType;
@@ -54,9 +55,15 @@ export function DisplayHeading({
   className?: string;
   /** Escape hatch for one-off overrides (e.g. a font-size bump on a single instance). */
   style?: CSSProperties;
+  /**
+   * BCP-47 tag, when this heading is in a different language from the page
+   * around it — a blog post rendered from its English fallback on a /mk URL.
+   * Screen readers switch voice on it.
+   */
+  lang?: string;
 }) {
   return (
-    <Tag className={cn('text-display', className)} style={style}>
+    <Tag className={cn('text-display', className)} style={style} lang={lang}>
       <span className="reveal-clip" style={stagger(delay)}>
         <span>{children}</span>
       </span>

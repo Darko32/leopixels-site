@@ -12,7 +12,8 @@
     "demos": "Demos",
     "howItWorks": "How it works",
     "pricing": "Pricing",
-    "faq": "FAQ"
+    "faq": "FAQ",
+    "blog": "Blog"
   },
 
   "cta": {
@@ -23,7 +24,9 @@
     "openLiveDemo": "Open the live demo",
     "emailUs": "Email us",
     "allDemos": "View all demos",
-    "backToDemos": "All demos"
+    "backToDemos": "All demos",
+    "readPost": "Read the post",
+    "backToBlog": "All posts"
   },
 
   "trades": {
@@ -203,6 +206,30 @@
       "city": "Please tell us the town or city.",
       "contact": "Please leave an email address or phone number so we can send the demo.",
       "generic": "Something went wrong sending that. Please email us instead and we'll pick it up straight away."
+    }
+  },
+
+  "blog": {
+    "meta": {
+      "title": "Website advice for trades businesses",
+      "description": "Plain answers on websites, local search and getting called, written for plumbers, HVAC contractors, electricians, roofers and auto shops."
+    },
+    "eyebrow": "Blog",
+    "title": "What actually gets you called.",
+    "lead": "Websites, local search and the small things that decide whether someone taps your number or the next result down.",
+    "readingTime": "{minutes} min read",
+    "updated": "Updated {date}",
+    "draftBadge": "Draft",
+    "inEnglish": "In English",
+    "translationPending": "This post has not been translated yet, so it is shown here in English.",
+    "ctaTitle": "See what your own site would look like.",
+    "ctaLead": "We build a working demo of your site in 48 hours, free, before you pay anything.",
+    "formats": {
+      "how-to": "How to",
+      "listicle": "List",
+      "guide": "Guide",
+      "news": "News",
+      "comparison": "Comparison"
     }
   },
 
