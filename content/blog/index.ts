@@ -11,9 +11,10 @@
 
 import type { BlogPost } from './_schema';
 import { postLastmod } from './_schema';
+import { websiteVsGoogleBusinessProfile } from './website-vs-google-business-profile/post';
 
 /** Every post, drafts included. */
-export const blogPosts: BlogPost[] = [];
+export const blogPosts: BlogPost[] = [websiteVsGoogleBusinessProfile];
 
 /**
  * Drafts render in `next dev` so a post can be reviewed as it looks, and
