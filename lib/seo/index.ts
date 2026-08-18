@@ -62,6 +62,7 @@ export async function buildMetadata({
   namespace,
   values,
   absoluteTitle = false,
+  locales,
 }: {
   locale: Locale;
   path: string;
@@ -69,6 +70,13 @@ export async function buildMetadata({
   values?: Record<string, string>;
   /** Skip the "| LeoPixels" suffix — used on the homepage, whose title is already long. */
   absoluteTitle?: boolean;
+  /**
+   * Narrows the hreflang cluster to the languages this route exists in. Same
+   * parameter `languageAlternates` takes, surfaced here for routes whose
+   * language coverage is data rather than a constant — /blog exists only in the
+   * locales that have a published post.
+   */
+  locales?: readonly Locale[];
 }): Promise<Metadata> {
   const t = await getTranslations(namespace);
 
@@ -81,7 +89,7 @@ export async function buildMetadata({
     description,
     alternates: {
       canonical: url,
-      languages: languageAlternates(path),
+      languages: languageAlternates(path, locales),
     },
     openGraph: {
       type: 'website',

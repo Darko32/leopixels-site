@@ -6,6 +6,7 @@ import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { site } from '@/content/site';
 import { routing } from '@/i18n/routing';
+import { navItems } from '@/lib/nav';
 import { organizationSchema, serviceSchema, websiteSchema } from '@/lib/schema';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
@@ -81,7 +82,7 @@ export default async function LocaleLayout({
   const tA11y = await getTranslations('a11y');
   const tMeta = await getTranslations('home.meta');
 
-  const nav = site.nav.map((item) => ({ href: item.href, label: t(item.key) }));
+  const nav = navItems().map((item) => ({ href: item.href, label: t(item.key) }));
 
   return (
     <html lang={locale} className={inter.variable} suppressHydrationWarning>

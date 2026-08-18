@@ -40,12 +40,19 @@ export const site = {
    */
   privacyUpdated: '2026-08-01',
 
-  /** In-page anchors, in header-nav order. Labels come from messages nav.*. */
+  /**
+   * In-page anchors, in header-nav order. Labels come from messages nav.*.
+   *
+   * Render this through `navItems()` in lib/nav.ts rather than mapping it
+   * directly: `blog` is gated on a post existing, because /blog 404s while the
+   * registry is empty and a nav link to a 404 is worse than no link.
+   */
   nav: [
     { key: 'demos', href: '/demos' },
     { key: 'howItWorks', href: '/#how-it-works' },
     { key: 'pricing', href: '/#pricing' },
     { key: 'faq', href: '/#faq' },
+    { key: 'blog', href: '/blog' },
   ],
 } as const;
 

@@ -24,6 +24,7 @@
  */
 
 import { demos } from '@/demos';
+import { newestPostLastmod, postLastmod, postLocales, publishedPosts } from '@/content/blog';
 import { site } from '@/content/site';
 import { routing, type Locale } from '@/i18n/routing';
 import { absoluteUrl, languageAlternates } from './index';
@@ -77,10 +78,44 @@ export const PAGES: SitemapEntry[] = [
  *                 Googlebot renders the page and needs the CSS and JS.
  */
 
-/** Blog posts. Empty today — add entries and sitemap-blog.xml wires itself up. */
-export const BLOG_POSTS: SitemapEntry[] = [
-  // { path: '/blog/why-plumbers-lose-jobs-to-google', lastmod: '2026-09-01', priority: 0.7 },
-];
+/**
+ * The blog surface: the listing plus every published post, derived from the
+ * post registry the routes render from.
+ *
+ * Derived rather than hand-listed, for the reason stated at the top of this
+ * file — a sitemap URL and the page it points at must not be able to disagree.
+ * A hand-kept array would restate each post's path, locales and date a second
+ * time, and the second copy is the one that goes stale. `lastmod` is still
+ * stated by hand; it is stated once, in the post's own config, as
+ * `updatedAt ?? publishedAt`.
+ *
+ * Drafts are excluded at the registry level and never appear here.
+ */
+export const BLOG_POSTS: SitemapEntry[] = buildBlogEntries();
+
+function buildBlogEntries(): SitemapEntry[] {
+  if (publishedPosts.length === 0) return [];
+
+  // `locales` per post comes from postLocales(), which reads the translations
+  // that exist rather than a list stated beside them. An untranslated post
+  // therefore lists only its English URL here — the Macedonian URL resolves and
+  // is reachable, but it renders the English text and canonicalises to the
+  // English original, so listing it would be submitting a known duplicate.
+  const posts: SitemapEntry[] = publishedPosts.map((post) => ({
+    path: `/blog/${post.slug}`,
+    lastmod: postLastmod(post),
+    priority: 0.7,
+    locales: postLocales(post),
+  }));
+
+  // The listing changes whenever a post lands, so it carries the newest post's
+  // date. Its own copy is translated in messages/*.json, so it exists in every
+  // locale and keeps the full hreflang cluster.
+  return [
+    { path: '/blog', lastmod: newestPostLastmod() ?? CONTENT_LAUNCHED, priority: 0.6 },
+    ...posts,
+  ];
+}
 
 export const HAS_BLOG = BLOG_POSTS.length > 0;
 

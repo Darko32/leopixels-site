@@ -124,6 +124,47 @@ export function creativeWorkSchema(
   };
 }
 
+/**
+ * A blog post.
+ *
+ * `image` is deliberately absent. Google lists it as recommended for
+ * BlogPosting, but the repo ships no per-post artwork and declares no
+ * `images.remotePatterns` — pointing the field at a generic OG card would claim
+ * an illustration of the article that does not exist. Same rule as the missing
+ * AggregateRating above: a field left out is always correct, a field filled in
+ * with something untrue never is.
+ *
+ * Author and publisher are both the organization. LeoPixels publishes no
+ * bylines, and inventing a Person to fill the slot is the same fabrication.
+ */
+export function articleSchema(
+  locale: Locale,
+  post: {
+    slug: string;
+    headline: string;
+    description: string;
+    datePublished: string;
+    dateModified?: string;
+  }
+): Json {
+  const url = absoluteUrl(locale, `/blog/${post.slug}`);
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: post.headline,
+    description: post.description,
+    url,
+    mainEntityOfPage: { '@type': 'WebPage', '@id': url },
+    datePublished: post.datePublished,
+    dateModified: post.dateModified ?? post.datePublished,
+    inLanguage: locale,
+    author: { '@id': `${site.url}/#organization` },
+    publisher: { '@id': `${site.url}/#organization` },
+    isPartOf: { '@id': `${site.url}/#website` },
+  };
+}
+
 export function itemListSchema(
   locale: Locale,
   items: { name: string; path: string }[]
