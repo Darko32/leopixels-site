@@ -45,15 +45,43 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          # Pinned rather than 'latest' so a Node release cannot change the
-          # result of a build that passed yesterday.
-          node-version: '22'
+          # Node 24, matching the toolchain that generates package-lock.json.
+          # This is load-bearing: node 22 ships npm 10, which computes a
+          # different dependency tree from the same package.json and rejects an
+          # npm 11 lockfile with "Missing: @emnapi/runtime" and friends. Keep
+          # this aligned with the version used locally, or npm ci breaks on
+          # every dependency change.
+          node-version: '24'
           cache: 'npm'
+
+      - name: Environment
+        run: |
+          echo "node $(node --version)"
+          echo "npm  $(npm --version)"
 
       # ci, not install: installs exactly the lockfile, and fails if
       # package.json and the lockfile disagree.
       - name: Install dependencies
+        id: install
         run: npm ci
+
+      # Every script in this job runs through tsx, which is a devDependency.
+      # Asserting it landed turns a later, confusing `tsx: not found` into an
+      # explicit statement about the install, at the step that caused it.
+      - name: Verify the toolchain installed
+        run: |
+          if [ ! -x node_modules/.bin/tsx ]; then
+            echo "::error::npm ci completed but node_modules/.bin/tsx is missing."
+            echo "tsx is a devDependency, so this usually means dev dependencies were"
+            echo "omitted (NODE_ENV=production, npm config production=true, or an"
+            echo "--omit=dev flag reaching npm from the environment)."
+            echo ""
+            echo "npm config (production/omit):"
+            npm config get production || true
+            npm config get omit || true
+            exit 1
+          fi
+          echo "tsx present: $(node -p "require('./package.json').devDependencies.tsx")"
 
       # Content checks first. They are the fastest and the most likely to fail
       # on an automated post, so failing here saves the slower steps.
@@ -76,6 +104,13 @@ jobs:
       # Prints published/scheduled/draft counts and the next go-live into the
       # run log, so a reviewer can see what the PR does to the schedule without
       # reading the diff.
+      #
+      # `always()` is deliberate: the schedule summary is worth having even when
+      # an earlier validation step failed. But it is qualified on the install,
+      # because a bare `always()` here runs this step into an empty
+      # node_modules when `npm ci` fails, and reports `tsx: not found` as the
+      # job's error. That buries the real failure under a symptom, which is
+      # exactly what happened on the first manual run of this workflow.
       - name: Blog status
-        if: always()
+        if: always() && steps.install.outcome == 'success'
         run: npm run blog:status
