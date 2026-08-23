@@ -20,6 +20,11 @@
  * Exit 0 = consistent. Exit 1 = unsatisfied edges, listed.
  */
 
+/* eslint-disable @typescript-eslint/no-require-imports --
+ * This is a standalone CommonJS script, not application source. It runs with
+ * `node` before any install has happened, so it cannot use the project's ESM
+ * or TypeScript toolchain, and require() is the only option available to it. */
+
 const path = require('node:path');
 
 const lockPath = path.join(process.cwd(), 'package-lock.json');
