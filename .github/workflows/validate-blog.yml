@@ -1,0 +1,81 @@
+name: Validate blog
+
+# The quality gate for blog changes.
+#
+# This is what makes unattended publishing safe: a post reaches main only after
+# a clean checkout has re-run every deterministic check. The generating agent
+# runs the same commands in its own sandbox, but a sandbox is not the build
+# environment, so nothing is trusted until it passes here.
+#
+# Runs on pull requests only. Pushing to main does not need it, because Vercel
+# builds main anyway and a failed build there simply keeps the previous deploy.
+
+on:
+  pull_request:
+    paths:
+      - 'content/blog/**'
+      - 'components/blog/**'
+      - 'app/[locale]/blog/**'
+      - 'lib/seo/**'
+      - 'lib/schema.ts'
+      - 'lib/nav.ts'
+      - 'scripts/blog-*.ts'
+      - 'messages/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/validate-blog.yml'
+  workflow_dispatch:
+
+# One run per branch. A second push supersedes the first rather than racing it.
+concurrency:
+  group: validate-blog-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Lint, typecheck, build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          # Pinned rather than 'latest' so a Node release cannot change the
+          # result of a build that passed yesterday.
+          node-version: '22'
+          cache: 'npm'
+
+      # ci, not install: installs exactly the lockfile, and fails if
+      # package.json and the lockfile disagree.
+      - name: Install dependencies
+        run: npm ci
+
+      # Content checks first. They are the fastest and the most likely to fail
+      # on an automated post, so failing here saves the slower steps.
+      #
+      # --external verifies every cited URL actually resolves. --strict promotes
+      # warnings (a missing translation, a post absent from the ledger) into
+      # errors, because on a pull request those are worth stopping for.
+      - name: Blog content lint
+        run: npm run blog:lint -- --external --strict
+
+      - name: ESLint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Production build
+        run: npm run build
+
+      # Prints published/scheduled/draft counts and the next go-live into the
+      # run log, so a reviewer can see what the PR does to the schedule without
+      # reading the diff.
+      - name: Blog status
+        if: always()
+        run: npm run blog:status

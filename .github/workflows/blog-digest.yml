@@ -1,0 +1,103 @@
+name: Blog digest
+
+# A monthly look at what the automation has been doing.
+#
+# The failure mode this exists for is silence. An automated pipeline that has
+# quietly stopped producing posts, or is producing them but nobody reads them,
+# looks exactly like one that is working. Once a month this opens a GitHub issue
+# with the current state, so "nothing arrived this month" becomes visible
+# instead of being the absence of a signal.
+#
+# It uses only GITHUB_TOKEN, which every repository already has. No external
+# service, no secret to configure, nothing to expire.
+
+on:
+  schedule:
+    # 08:00 UTC on the 1st of each month.
+    - cron: '0 8 1 * *'
+  workflow_dispatch:
+
+concurrency:
+  group: blog-digest
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  digest:
+    name: Publish the monthly digest
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Collect status
+        id: collect
+        run: |
+          npm run blog:status -- --json > /tmp/status.json
+          {
+            echo 'report<<DIGEST_EOF'
+            npm run blog:status --silent
+            echo 'DIGEST_EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      # Content problems that have accumulated since the last digest. Does not
+      # fail the run: this is a report, not a gate.
+      - name: Content lint (report only)
+        id: lint
+        continue-on-error: true
+        run: |
+          {
+            echo 'findings<<DIGEST_EOF'
+            npm run blog:lint --silent -- --external || true
+            echo 'DIGEST_EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Open the digest issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const status = ${{ toJSON(steps.collect.outputs.report) }};
+            const findings = ${{ toJSON(steps.lint.outputs.findings) }};
+            const month = new Date().toISOString().slice(0, 7);
+
+            const body = [
+              `Automated monthly digest for **${month}**.`,
+              '',
+              '## Status',
+              '```',
+              status.trim(),
+              '```',
+              '',
+              '## Content lint',
+              '```',
+              findings.trim(),
+              '```',
+              '',
+              '## Worth checking',
+              '- Is the post count what the schedule promised?',
+              '- Do the recent topics still read as distinct, or are they converging?',
+              '- Is `content/blog/planned.ts` still an accurate picture of what is queued?',
+              '- Is the GitHub token used by the generation routine close to expiring?',
+              '',
+              '_Opened by `.github/workflows/blog-digest.yml`. Close it once read._',
+            ].join('\n');
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Blog digest ${month}`,
+              body,
+              labels: ['blog-automation'],
+            });

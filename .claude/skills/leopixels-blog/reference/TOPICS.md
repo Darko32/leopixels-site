@@ -88,4 +88,4 @@ Length follows the material. A post that runs short because the research is genu
 7. **`faq` block before the conclusion.** Heading in the topic's own words, never "Frequently Asked Questions". A 2-3 sentence `intro` stating a fact the questions share, then 3-4 questions the body did not already answer, each answered in 40-60 words.
 8. **Conclusion**, one or two paragraphs, as the last `paragraph` blocks. It advances — a next step, a fresh specific, the subject against its wider field. It never recaps the body and never ends on a tidy maxim.
 
-Every heading is in Title Case.
+Every English heading is in Title Case. **Macedonian headings are sentence case** — Title Case is an English typographic convention, and applying it to Macedonian produces text that reads as broken. `blog-lint` enforces Title Case for `en` only.

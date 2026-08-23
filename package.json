@@ -11,7 +11,9 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "build:demos": "tsx scripts/build-demos.ts",
-    "demo:export": "tsx scripts/export-demo.ts"
+    "demo:export": "tsx scripts/export-demo.ts",
+    "blog:lint": "tsx scripts/blog-lint.ts",
+    "blog:status": "tsx scripts/blog-status.ts"
   },
   "dependencies": {
     "clsx": "^2.1.1",

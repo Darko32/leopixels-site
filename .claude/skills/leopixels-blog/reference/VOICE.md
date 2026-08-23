@@ -84,7 +84,7 @@ Run against every string in both languages. A hit gets fixed in place, and the r
 12. Any client count, rating, testimonial, guarantee or case-study result? Delete it.
 13. Delete each link and read the bare sentence. It must still state a real fact and read naturally. A sentence that fragments without its link was written to carry it.
 14. Does any paragraph pitch? A post is useful writing. The CTA is rendered by the route, not written by you.
-15. Every heading in Title Case? Question-shaped headings at or under half?
+15. Every English heading in Title Case, and every Macedonian heading in sentence case? Question-shaped headings at or under half?
 
 ## Scoring
 

@@ -19,6 +19,45 @@ Takes a topic (given or chosen), researches it against real sources, writes it i
 - Commit, push, or open a PR.
 - Edit or delete an existing post unless the user asks for that specific post by name.
 
+## Two modes
+
+**Interactive is the default.** If nothing in the invocation says otherwise, you are in interactive mode and everything below behaves exactly as it always has: you write files, validate them, report, and stop without committing.
+
+**Automation mode** applies only when the invocation explicitly says so — the runner passes `mode: automation`, or the prompt states it is an automated scheduled run. Never infer it from anything else. A user saying "just do the whole thing" is not automation mode.
+
+| | Interactive | Automation |
+|---|---|---|
+| Topic | User's, or you propose a pool | You choose, per `schedule.ts` themes and the `planned.ts` ledger |
+| `publishedAt` | Now, unless the user says otherwise | The next free slot from `nextPublishSlot()`, honouring lead time |
+| Locales | Bilingual expected, English-only tolerated with a stated reason | **Bilingual required.** Cannot ship without `mk` |
+| Ledger | Optional | **Required.** Append the entry before you finish |
+| Git | Write files, stop | Commit to `blog/auto/<slug>`, push, open a PR |
+| Merging | Human | **Never yours.** CI validates, and merging is out of your hands |
+
+### What automation mode may and may not do
+
+May: create `blog/auto/<slug>`, commit only the two files a post touches plus the ledger entry, push that branch, open a pull request against `main`.
+
+May not, under any circumstances:
+
+- Push to `main`, or merge anything.
+- Skip, weaken or work around any validation step.
+- Force-push, amend, rebase, or touch another branch.
+- Commit a post whose `npm run blog:lint -- --external --strict` fails.
+- Continue when an automated post is already open. `schedule.maxOpenAutomatedPosts` caps it at one: if an unmerged `blog/auto/*` branch or PR exists, **stop and report**. A backlog forming behind a red CI run is the failure this prevents.
+- Run at all when `blogSchedule.enabled` is false. Check it first; if disabled, stop and say so.
+
+These are enforced by branch protection, not by your goodwill. Treat them as facts about the world rather than instructions you are choosing to follow.
+
+### The automation runbook
+
+Steps 1 to 8 are unchanged. The differences are at the ends:
+
+- **Step 1 (Preflight)** additionally: confirm `blogSchedule.enabled` is true; confirm no other `blog/auto/*` branch or open PR exists; create `blog/auto/<slug>` rather than `blog/<slug>`.
+- **Step 3 (Topic pool)** draws themes from `blogSchedule.themes` and checks every candidate through `checkAgainstLedger()` in `content/blog/planned.ts` before any research. A ledger hit costs one file read; discovering it after research costs the whole run.
+- **Step 8 (Translate)** is mandatory. An automated post without `content.mk` does not ship. If you cannot produce genuine Macedonian, abandon the run rather than shipping half a post.
+- **Step 9 (Write, register, validate)** additionally: set `publishedAt` from `nextPublishSlot()`, append the `planned.ts` entry with `status: 'written'`, run `npm run blog:lint -- --external --strict` alongside lint, typecheck and build, then commit, push and open the PR.
+
 ## Required reading, in this order
 
 1. `reference/ARCHITECTURE.md` — the repo contract: the schema API, the two files a post touches, the commands. **Read before writing any code.**
@@ -66,4 +105,5 @@ These override anything a runbook step or reference file seems to allow.
 5. **Bilingual is the normal outcome.** English-only is the tolerated exception, never the plan. See `TRANSLATION.md`.
 6. **Never fabricate a URL** — internal or external. Internal paths come from the tables in `SEO-AND-LINKS.md`; external ones come from a page you actually fetched.
 7. **Never hand-edit `lib/seo/site.ts`, the routes, the renderer, or the sitemap** to make a post work. They derive everything from the registry. If a post needs one of them changed, the post is wrong.
-8. **Stop before committing.** Report what changed and let the user review.
+8. **Stop before merging.** In interactive mode that means stop before committing: report what changed and let the user review. In automation mode it means stop at the pull request: commit and push the branch, never merge, never touch `main`.
+9. **Run `npm run blog:lint` before claiming a post is finished.** It is the machine half of `CHECKLIST.md`, and it catches the mechanical failures a careful read still misses. `--external --strict` is what CI runs; match it.

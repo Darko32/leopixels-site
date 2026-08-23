@@ -8,11 +8,12 @@ Next.js 16 App Router, React 19, TypeScript 5.9 (`strict`, `noUncheckedIndexedAc
 
 ## Where a post lives
 
-A post is **two files touched**, and nothing else:
+A post is **two files touched** interactively, three in automation mode:
 
 ```
 content/blog/<slug>/post.ts     ← new: the post itself
 content/blog/index.ts           ← edited: one import + one array entry
+content/blog/planned.ts         ← automation mode only: the ledger entry
 ```
 
 That is the entire registration. Do **not** also edit:
@@ -25,6 +26,26 @@ That is the entire registration. Do **not** also edit:
 | `messages/*.json` | Post text lives in the post config. Only the blog's own chrome is in messages. |
 | `content/site.ts` | The `Blog` nav link is already wired and gated on a post existing. |
 
+## Scheduling, the ledger and the linter
+
+Three modules the automation depends on. Read them rather than reimplementing what they decide.
+
+| File | What it owns |
+|---|---|
+| `content/blog/schedule.ts` | Editorial policy: the kill switch, publish days, the UTC hour, lead time, locales, themes. `nextPublishSlot(from, taken)` returns the next free instant; `formatSlot()` renders it in the exact shape a post stores. |
+| `content/blog/planned.ts` | The topic ledger. `checkAgainstLedger({slug, title, intent})` deduplicates on slug, title and **search intent** — two posts can share no words and still compete for one query. |
+| `scripts/blog-lint.ts` | The mechanical half of `CHECKLIST.md`, as code. |
+
+**`publishedAt` is a gate, not a label.** A post whose instant has not passed has no route, no sitemap entry and 404s in every locale. In automation mode it comes from `nextPublishSlot()`, never from your own arithmetic.
+
+```bash
+npm run blog:status
+```
+
+```bash
+npm run blog:lint -- --external --strict
+```
+
 ## The schema
 
 From `content/blog/_schema.ts`. Import from `../_schema` inside a post file.
@@ -32,8 +53,8 @@ From `content/blog/_schema.ts`. Import from `../_schema` inside a post file.
 ```ts
 defineBlogPost({
   slug: string,              // matches the folder name, lowercase-hyphenated, never changes after publish
-  publishedAt: string,       // 'YYYY-MM-DD'
-  updatedAt?: string,        // 'YYYY-MM-DD' — only when the CONTENT changes later
+  publishedAt: string,       // UTC ISO instant, e.g. '2026-08-20T09:00:00Z'. A GATE: see below.
+  updatedAt?: string,        // same shape; only when the CONTENT changes later
   format: 'how-to' | 'listicle' | 'guide' | 'news' | 'comparison',
   tags?: readonly string[],  // free-text labels. NOT a taxonomy — the site has none. Do not invent one.
   draft?: boolean,           // true = renders in `next dev` only, never in the sitemap
@@ -101,7 +122,11 @@ type RichText = readonly (string | InlineLink | InlineStrong)[];
 
 ## Validation
 
-Run all three from the repo root, in this order. All three must pass.
+Run all four from the repo root, in this order. All four must pass.
+
+```bash
+npm run blog:lint -- --external --strict
+```
 
 ```bash
 npm run lint
@@ -115,7 +140,7 @@ npm run typecheck
 npm run build
 ```
 
-`typecheck` is the real schema validator — a malformed post cannot compile. `build` proves the routes generate.
+`blog:lint` is the content gate and the same command CI runs. `typecheck` is the schema validator, since a malformed post cannot compile. `build` proves the routes generate.
 
 Then confirm from the build output:
 
@@ -128,6 +153,7 @@ Then confirm from the build output:
 ## Repo hygiene
 
 - **Work on a branch.** `git switch -c blog/<slug>`. Every push to `main` deploys to leopixels.com.
-- **Never commit or push.** Hand the change back for review.
+- **Interactive mode: never commit or push.** Hand the change back for review.
+- **Automation mode: commit and push the branch, open the PR, and stop there.** Never merge, never push to `main`.
 - `tsconfig.tsbuildinfo` changes when you run typecheck. Restore it — `git checkout -- tsconfig.tsbuildinfo` — so the diff is only your real work.
 - Report the change set with `git status --short` and `git diff --stat`.

@@ -12,7 +12,8 @@ Work through every line. A post that fails one is not finished. Report the resul
 ## 2. Schema
 
 - [ ] `slug` is lowercase, hyphenated, no leading or trailing hyphen.
-- [ ] `publishedAt` is a real `YYYY-MM-DD` date, not a placeholder.
+- [ ] `publishedAt` is a UTC ISO instant shaped exactly like `2026-08-20T09:00:00Z`, not a date and not a placeholder.
+- [ ] Automation mode only: `publishedAt` came from `nextPublishSlot()`, not from your own arithmetic.
 - [ ] `updatedAt` is absent on a new post.
 - [ ] `format` is one of the five allowed values, and matches what the post actually is.
 - [ ] `content.en` is present and complete.
@@ -26,7 +27,8 @@ Work through every line. A post that fails one is not finished. Report the resul
 - [ ] The first intro paragraph answers the headline standing alone.
 - [ ] 4 or more `heading` level-2 blocks.
 - [ ] Question-shaped headings are at or under half.
-- [ ] Every heading is Title Case.
+- [ ] Every **English** heading is Title Case.
+- [ ] Every **Macedonian** heading is sentence case, not Title Case.
 - [ ] No `heading` with `level: 1`.
 - [ ] At most one `faq` block, placed before the conclusion.
 - [ ] `faq` has 3-4 questions, each answering something the body did not.
@@ -62,7 +64,11 @@ Work through every line. A post that fails one is not finished. Report the resul
 
 ## 6. Build
 
-Run all three. Paste the real result; never report a check you did not run.
+Run all four. Paste the real result; never report a check you did not run.
+
+```bash
+npm run blog:lint -- --external --strict
+```
 
 ```bash
 npm run lint
@@ -76,7 +82,7 @@ npm run typecheck
 npm run build
 ```
 
-- [ ] All three pass.
+- [ ] All four pass. `blog:lint` is the same command CI runs, so a failure here is a failure there.
 
 ## 7. Routes and SEO, from the build output
 

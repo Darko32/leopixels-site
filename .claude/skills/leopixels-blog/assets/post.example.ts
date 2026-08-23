@@ -27,7 +27,7 @@ import { defineBlogPost } from '@/content/blog/_schema';
 
 export const examplePost = defineBlogPost({
   slug: 'example-post',
-  publishedAt: '2026-08-17',
+  publishedAt: '2026-08-20T09:00:00Z',
   format: 'how-to',
   tags: ['local search', 'google business profile'],
 
@@ -204,7 +204,7 @@ export const examplePost = defineBlogPost({
           ],
         },
 
-        { kind: 'heading', level: 2, text: 'На Што Всушност Се Рангира Map Pack' },
+        { kind: 'heading', level: 2, text: 'На што всушност се рангира Map Pack' },
         {
           kind: 'paragraph',
           text: [
@@ -219,7 +219,7 @@ export const examplePost = defineBlogPost({
           ],
         },
 
-        { kind: 'heading', level: 3, text: 'Категориите Значат Повеќе Отколку Што Изгледаат' },
+        { kind: 'heading', level: 3, text: 'Категориите значат повеќе отколку што изгледаат' },
         {
           kind: 'paragraph',
           text: [
@@ -227,7 +227,7 @@ export const examplePost = defineBlogPost({
           ],
         },
 
-        { kind: 'heading', level: 2, text: 'Четирите Поправки Што Вредат Први' },
+        { kind: 'heading', level: 2, text: 'Четирите поправки што вредат први' },
         {
           kind: 'paragraph',
           text: [
@@ -253,7 +253,7 @@ export const examplePost = defineBlogPost({
           ],
         },
 
-        { kind: 'heading', level: 2, text: 'Зошто Сајтот Сепак Одлучува' },
+        { kind: 'heading', level: 2, text: 'Зошто сајтот сепак одлучува' },
         {
           kind: 'paragraph',
           text: [
@@ -282,7 +282,7 @@ export const examplePost = defineBlogPost({
 
         {
           kind: 'faq',
-          heading: 'Прашања Што Ги Поставуваат Водоводџиите',
+          heading: 'Прашања што ги поставуваат водоводџиите',
           intro: [
             'Трите места се освежуваат постојано, а профил што штотуку е поправен може да му треба некоја недела да се смири.',
           ],
