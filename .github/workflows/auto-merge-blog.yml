@@ -47,7 +47,12 @@ concurrency:
   group: auto-merge-${{ github.event.workflow_run.head_branch }}
   cancel-in-progress: false
 
+# Declaring this block sets every scope NOT listed here to `none`. checks: read
+# is therefore load-bearing rather than optional: without it the Checks API
+# returns 403 and the second, independent verification of the validation result
+# cannot run at all. It grants read access to check runs and nothing else.
 permissions:
+  checks: read
   contents: write
   pull-requests: write
 
