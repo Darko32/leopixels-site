@@ -5,28 +5,59 @@
  * same reason: one source of truth is what stops a published URL and the
  * sitemap entry describing it from disagreeing.
  *
- * Empty today. Every consumer handles that: /blog 404s while nothing is
- * published, and the nav link stays hidden until it would resolve.
+ * A post is registered here from the moment it is written, which is not the
+ * same as being public: `publishedAt` gates that separately, so this array
+ * holds published, scheduled and draft posts alike. Every consumer reads the
+ * set it needs. When none are published, /blog 404s and the nav link stays
+ * hidden until one is.
  */
 
 import type { BlogPost } from './_schema';
-import { postLastmod } from './_schema';
+import { isPublished, postLastmod } from './_schema';
 import { websiteVsGoogleBusinessProfile } from './website-vs-google-business-profile/post';
 
-/** Every post, drafts included. */
+/** Every post: published, scheduled and draft alike. */
 export const blogPosts: BlogPost[] = [websiteVsGoogleBusinessProfile];
 
 /**
- * Drafts render in `next dev` so a post can be reviewed as it looks, and
- * nowhere else. Nothing here reaches the sitemap — that reads `publishedPosts`.
+ * Drafts and not-yet-due posts render in `next dev` so either can be reviewed
+ * as it looks, and nowhere else. Nothing here reaches the sitemap — that reads
+ * `publishedPosts`.
  */
-const includeDrafts = process.env.NODE_ENV === 'development';
+const includeUnpublished = process.env.NODE_ENV === 'development';
 
-/** Published posts only. What the sitemap and the nav gate are built from. */
-export const publishedPosts: BlogPost[] = blogPosts.filter((post) => !post.draft);
+/**
+ * The moment the gate is evaluated against.
+ *
+ * Captured once, at module load, which during `next build` is build time. That
+ * is the only moment a statically generated site has: there is no server later
+ * to re-ask the question, so a post goes live on the first build after its
+ * `publishedAt`, and rebuild cadence is what sets publishing precision.
+ */
+const BUILD_TIME = new Date();
 
-/** What the routes render: published everywhere, plus drafts during development. */
-export const visiblePosts: BlogPost[] = includeDrafts ? blogPosts : publishedPosts;
+/**
+ * Published posts only: not a draft, and `publishedAt` has passed. What the
+ * routes, the sitemap and the nav gate are all built from.
+ */
+export const publishedPosts: BlogPost[] = blogPosts.filter((post) =>
+  isPublished(post, BUILD_TIME)
+);
+
+/**
+ * Written, not a draft, and waiting for its instant. These are committed to the
+ * repository and invisible on the site: no route, no sitemap entry, no listing
+ * card, 404 in every locale until the gate opens.
+ */
+export const scheduledPosts: BlogPost[] = blogPosts.filter(
+  (post) => !post.draft && !isPublished(post, BUILD_TIME)
+);
+
+/**
+ * What the routes render: published everywhere, plus drafts and scheduled posts
+ * during development.
+ */
+export const visiblePosts: BlogPost[] = includeUnpublished ? blogPosts : publishedPosts;
 
 /** Newest first, by the date the post claims. */
 function byDateDesc(a: BlogPost, b: BlogPost): number {

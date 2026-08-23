@@ -148,9 +148,23 @@ export type BlogTranslations = { en: BlogPostContent } & Partial<
 export interface BlogPost {
   /** URL segment. `/blog/<slug>`. Lowercase, hyphenated, never changed after publish. */
   slug: string;
-  /** ISO date (YYYY-MM-DD). Drives the sitemap lastmod and the JSON-LD. */
+  /**
+   * The moment this post goes live, as a full ISO instant with a timezone:
+   * `'2026-08-20T09:00:00Z'`.
+   *
+   * This is a GATE, not a label. A post whose instant has not passed is not
+   * published: no route, no sitemap entry, no listing card, 404 in every
+   * locale. See `isPublished()`.
+   *
+   * Because the site is statically generated, the comparison happens at BUILD
+   * time. A post goes live on the first build after its instant, so rebuild
+   * cadence sets publishing precision, not this field.
+   */
   publishedAt: string;
-  /** ISO date (YYYY-MM-DD). Set only when the post's CONTENT actually changed. */
+  /**
+   * Full ISO instant, same shape as `publishedAt`. Set only when the post's
+   * CONTENT actually changed. Never gates anything.
+   */
   updatedAt?: string;
   format: PostFormat;
   /** Free-text topic labels. No site taxonomy exists — these are not a category system. */
@@ -208,11 +222,54 @@ export function contentLocale(post: BlogPost, locale: Locale): Locale {
  */
 const FALLBACK_LOCALE = 'en' satisfies Locale;
 
+/* ──────────────────────────  the publish gate  ─────────────────────────── */
+
+/**
+ * Milliseconds for an ISO instant, or a thrown error naming the post.
+ *
+ * Throwing is the point. `Date.parse('2026-08-20')` is lenient and
+ * `Date.parse('next tuesday')` is NaN, and a NaN compares false against every
+ * `now` there will ever be. A typo would therefore not break the build; it
+ * would publish the post never, silently, forever. Failing the build loudly is
+ * the only honest outcome.
+ */
+function instantOf(value: string, slug: string, field: string): number {
+  const ms = Date.parse(value);
+  if (Number.isNaN(ms)) {
+    throw new Error(
+      `content/blog: post "${slug}" has an unparseable ${field}: "${value}". ` +
+        `Expected a full ISO instant with a timezone, e.g. "2026-08-20T09:00:00Z".`
+    );
+  }
+  return ms;
+}
+
+/**
+ * Whether a post is live as of `now`.
+ *
+ * Two conditions, both required: it is not a draft, and its `publishedAt`
+ * instant has passed. Everything that asks "is this post public" asks through
+ * here, so the routes, the listing, the sitemap and the nav gate cannot
+ * disagree about it.
+ */
+export function isPublished(post: BlogPost, now: Date = new Date()): boolean {
+  if (post.draft) return false;
+  return instantOf(post.publishedAt, post.slug, 'publishedAt') <= now.getTime();
+}
+
 /* ────────────────────────────  derived facts  ──────────────────────────── */
 
-/** The date a post claims as its last meaningful change. */
+/**
+ * The date a post claims as its last meaningful change, as `YYYY-MM-DD`.
+ *
+ * The sitemap's `<lastmod>` is a date, not an instant, so the UTC calendar day
+ * is taken from the stored instant rather than stored a second time. Same rule
+ * the rest of this file follows: one source, derived everywhere else.
+ */
 export function postLastmod(post: BlogPost): string {
-  return post.updatedAt ?? post.publishedAt;
+  const value = post.updatedAt ?? post.publishedAt;
+  const field = post.updatedAt ? 'updatedAt' : 'publishedAt';
+  return new Date(instantOf(value, post.slug, field)).toISOString().slice(0, 10);
 }
 
 function countWords(text: string): number {

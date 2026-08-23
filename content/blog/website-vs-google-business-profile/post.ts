@@ -2,7 +2,7 @@ import { defineBlogPost } from '../_schema';
 
 export const websiteVsGoogleBusinessProfile = defineBlogPost({
   slug: 'website-vs-google-business-profile',
-  publishedAt: '2026-08-17',
+  publishedAt: '2026-08-17T09:00:00Z',
   format: 'comparison',
   tags: ['google business profile', 'local search', 'trades websites'],
 
@@ -132,9 +132,9 @@ export const websiteVsGoogleBusinessProfile = defineBlogPost({
         {
           kind: 'paragraph',
           text: [
-            'There is a quieter benefit. Google names verifying ownership in Search Console as the first step in establishing ',
+            'There is a quieter benefit. Google names verifying ownership in Search Console as the first step in establishing your site as ',
             {
-              text: 'your site as an official presence',
+              text: 'an official presence',
               href: 'https://developers.google.com/search/docs/appearance/establish-business-details',
               title: 'Google Search Central documentation on establishing business details and site ownership',
             },
