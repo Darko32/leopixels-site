@@ -1,0 +1,157 @@
+name: Auto-merge blog posts
+
+# Closes the loop: an automated post merges itself once every required check
+# passes, with no human in the path.
+#
+# ─────────────────────────────────────────────────────────────────────────────
+# WHY THIS DOES NOT MERGE ANYTHING ITSELF
+# ─────────────────────────────────────────────────────────────────────────────
+# This workflow only REQUESTS auto-merge. GitHub holds the pull request and
+# merges it when, and only when, every required status check on `main` has
+# passed. The decision to merge is therefore enforced by GitHub, not by code in
+# this file.
+#
+# That is the whole safety argument. A workflow that read the check states and
+# called merge itself would put the gate in a shell script, where one wrong
+# condition ships a broken post to production. Here, a bug in this file can at
+# worst fail to queue a merge. It cannot cause one.
+#
+# LOAD-BEARING: this only works if `main` has branch protection with the
+# `Lint, typecheck, build` check marked REQUIRED. Without required checks,
+# GitHub treats an auto-merge request as satisfiable immediately and merges
+# straight away. Protection is not optional decoration here; it is the gate.
+#
+# ─────────────────────────────────────────────────────────────────────────────
+# THE SCOPE GUARD
+# ─────────────────────────────────────────────────────────────────────────────
+# Passing CI proves a change builds. It does not prove the change is a blog
+# post. A confused or hijacked generation run could produce a perfectly valid
+# build that also edits the routes, the deploy workflow, or this file.
+#
+# So auto-merge is requested only when every changed file lives under
+# content/blog/. Anything wider is left open for a person, with a comment
+# explaining why. That bounds the unattended path to content, permanently,
+# regardless of what the agent decides to do.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+concurrency:
+  group: auto-merge-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  request-auto-merge:
+    name: Request auto-merge
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    # Same-repository branches only. A fork's pull request never reaches this
+    # job, so a stranger cannot aim it at their own head ref.
+    if: >-
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      startsWith(github.event.pull_request.head.ref, 'blog/auto/') &&
+      github.event.pull_request.draft == false
+
+    steps:
+      - name: Check the pull request only touches blog content
+        id: scope
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+
+          files=$(gh api --paginate "repos/$REPO/pulls/$PR/files" --jq '.[].filename')
+
+          if [ -z "$files" ]; then
+            echo "No files changed. Refusing to auto-merge an empty pull request."
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+            echo "reason=the pull request changes no files" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "Changed files:"
+          echo "$files" | sed 's/^/  /'
+
+          outside=$(echo "$files" | grep -v '^content/blog/' || true)
+
+          if [ -n "$outside" ]; then
+            echo ""
+            echo "Files outside content/blog/:"
+            echo "$outside" | sed 's/^/  /'
+            {
+              echo "ok=false"
+              echo "reason=it changes files outside content/blog/"
+              echo "outside<<GUARD_EOF"
+              echo "$outside"
+              echo "GUARD_EOF"
+            } >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo ""
+          echo "Every changed file is under content/blog/."
+          echo "ok=true" >> "$GITHUB_OUTPUT"
+
+      - name: Enable auto-merge
+        if: steps.scope.outputs.ok == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+        run: |
+          set -euo pipefail
+
+          # --auto queues the merge. GitHub performs it only once the required
+          # checks pass. If they never pass, the pull request simply stays open.
+          if gh pr merge --auto --squash --delete-branch "$PR_URL"; then
+            echo "::notice::Auto-merge queued. GitHub will merge once required checks pass."
+          else
+            echo "::error::Could not enable auto-merge."
+            echo "The usual causes, in order of likelihood:"
+            echo "  1. Auto-merge is not enabled for the repository."
+            echo "     Settings > General > Pull Requests > Allow auto-merge."
+            echo "  2. Branch protection on main has no required status checks,"
+            echo "     so there is nothing for auto-merge to wait on."
+            echo "     Settings > Branches > main > Require status checks."
+            exit 1
+          fi
+
+      - name: Explain why this was left for a human
+        if: steps.scope.outputs.ok == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          REASON: ${{ steps.scope.outputs.reason }}
+          OUTSIDE: ${{ steps.scope.outputs.outside }}
+        run: |
+          set -euo pipefail
+
+          {
+            echo "**Auto-merge was not requested for this pull request.**"
+            echo ""
+            echo "The scope guard in \`.github/workflows/auto-merge-blog.yml\` allows unattended"
+            echo "merging only when every changed file lives under \`content/blog/\`, so an"
+            echo "automated run can never merge a change to the build, the routes or CI itself."
+            echo ""
+            echo "This one was held back because $REASON."
+            if [ -n "${OUTSIDE:-}" ]; then
+              echo ""
+              echo "Files outside the allowed scope:"
+              echo ""
+              echo '```'
+              echo "$OUTSIDE"
+              echo '```'
+            fi
+            echo ""
+            echo "Validation still runs normally. Review and merge it yourself if the change is intended."
+          } > /tmp/comment.md
+
+          gh pr comment "$PR_URL" --body-file /tmp/comment.md
+          echo "::warning::Auto-merge withheld: $REASON"

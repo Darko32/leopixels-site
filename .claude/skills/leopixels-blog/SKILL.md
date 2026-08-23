@@ -38,6 +38,13 @@ Takes a topic (given or chosen), researches it against real sources, writes it i
 
 May: create `blog/auto/<slug>`, commit only the two files a post touches plus the ledger entry, push that branch, open a pull request against `main`.
 
+**Two constraints the merge pipeline imposes, and both are hard:**
+
+1. **The branch must be named `blog/auto/<slug>`.** `.github/workflows/auto-merge-blog.yml` keys on that exact prefix. Any other name means no auto-merge, and the post sits in an open pull request until a person notices.
+2. **Every changed file must live under `content/blog/`.** The scope guard refuses to queue an auto-merge for a pull request that touches anything else, and comments on it instead. That is deliberate: passing CI proves a change builds, not that it is a blog post. If your post seems to need a change to the routes, the renderer, the workflows or `package.json`, the post is wrong. Fix the post.
+
+You do **not** enable auto-merge yourself. Open the pull request and stop; the workflow requests it, and GitHub merges only once every required check is green.
+
 May not, under any circumstances:
 
 - Push to `main`, or merge anything.
