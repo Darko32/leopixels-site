@@ -1,0 +1,191 @@
+name: One-time lockfile repair (TEMPORARY)
+
+# ─────────────────────────────────────────────────────────────────────────────
+# THIS WORKFLOW IS TEMPORARY. DELETE IT ONCE THE LOCKFILE IS FIXED AND MERGED.
+# ─────────────────────────────────────────────────────────────────────────────
+#
+# Why it exists
+#
+# package-lock.json is internally inconsistent. Three dependency edges point at
+# packages that have no entry anywhere in the lock:
+#
+#   @img/sharp-wasm32               needs @emnapi/runtime@^1.7.0
+#   @tailwindcss/oxide-wasm32-wasi  needs @emnapi/core@^1.11.1
+#   @tailwindcss/oxide-wasm32-wasi  needs @emnapi/runtime@^1.11.1
+#
+# The only @emnapi/core and @emnapi/runtime in the lock are 1.10.0, nested
+# under @unrs/resolver-binding-wasm32-wasi where nothing else can reach them.
+#
+# Those are wasm32-wasi fallback bindings. On Windows npm installs the
+# win32-x64-msvc binding, never resolves the wasi branch, and writes a lockfile
+# with that subtree's dependencies unresolved. Linux evaluates the branch and
+# finds the hole, which is why `npm ci` fails only in CI.
+#
+# The repair cannot be done from Windows. Every documented npm mechanism was
+# tried there and none resolves that branch: plain install, delete-and-
+# regenerate, --package-lock-only, --os/--cpu/--libc overrides, --include=
+# optional, and --install-strategy=nested. So the lockfile has to be generated
+# on Linux, which is what this job is for.
+#
+# What it does NOT do: it does not touch package.json, does not use npm ci to
+# regenerate, and uses no --force, --legacy-peer-deps or any other flag that
+# bypasses resolution. It runs a plain `npm install` and commits the single
+# file that changes.
+#
+# It pushes to a scratch branch, never to main, so the diff can be reviewed
+# before anything is merged.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: lockfile-repair
+  cancel-in-progress: false
+
+jobs:
+  repair:
+    name: Regenerate package-lock.json on Linux
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          # Same version the other workflows pin, so the lockfile this produces
+          # is the one they will consume.
+          node-version: '24'
+
+      - name: Environment
+        run: |
+          echo "node $(node --version)"
+          echo "npm  $(npm --version)"
+          echo "os   $(uname -srm)"
+
+      # Fingerprint package.json so any modification is caught, rather than
+      # trusted not to happen.
+      - name: Fingerprint package.json
+        id: before
+        run: echo "sha=$(sha256sum package.json | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
+
+      - name: Show the problem before repair
+        run: |
+          cp package-lock.json /tmp/lock-before.json
+          node .github/scripts/validate-lock.cjs || true
+
+      # A plain install. No flags. This is the whole repair: on Linux, npm
+      # resolves the wasi branch it skips on Windows and writes the missing
+      # entries.
+      - name: npm install
+        run: npm install
+
+      - name: Assert package.json was not modified
+        run: |
+          after=$(sha256sum package.json | cut -d' ' -f1)
+          if [ "$after" != "${{ steps.before.outputs.sha }}" ]; then
+            echo "::error::package.json changed during npm install. Refusing to continue."
+            git --no-pager diff -- package.json
+            exit 1
+          fi
+          echo "package.json is byte-identical. No dependency was added, removed or bumped."
+
+      - name: Assert only package-lock.json changed
+        id: changed
+        run: |
+          changed=$(git status --porcelain | awk '{print $2}')
+          echo "Changed files:"
+          echo "${changed:-  (none)}" | sed 's/^/  /'
+
+          if [ -z "$changed" ]; then
+            echo "::warning::npm install produced no change. The lockfile may already be correct on Linux."
+            echo "any=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          unexpected=$(echo "$changed" | grep -v '^package-lock\.json$' || true)
+          if [ -n "$unexpected" ]; then
+            echo "::error::Files other than package-lock.json changed:"
+            echo "$unexpected" | sed 's/^/  /'
+            exit 1
+          fi
+
+          echo "any=true" >> "$GITHUB_OUTPUT"
+
+      - name: Validate every dependency edge resolves
+        if: steps.changed.outputs.any == 'true'
+        run: node .github/scripts/validate-lock.cjs
+
+      # The real proof. A lockfile that passes the edge validator but that
+      # npm ci rejects is still broken, so run the actual command that has been
+      # failing, from a clean node_modules.
+      - name: Prove npm ci now succeeds on Linux
+        if: steps.changed.outputs.any == 'true'
+        run: |
+          rm -rf node_modules
+          npm ci
+          echo "npm ci succeeded."
+
+      # If npm ci works, the rest of the pipeline should too. Running it here
+      # means the review can be done on evidence rather than on hope.
+      - name: Run the full validation suite
+        if: steps.changed.outputs.any == 'true'
+        run: |
+          npm run blog:lint -- --external --strict
+          npm run lint
+          npm run typecheck
+          npm run build
+
+      - name: Summarise the lockfile diff
+        if: steps.changed.outputs.any == 'true'
+        run: |
+          added=$(git diff --numstat -- package-lock.json | awk '{print $1}')
+          removed=$(git diff --numstat -- package-lock.json | awk '{print $2}')
+          echo "package-lock.json: +$added / -$removed lines"
+          echo ""
+          echo "@emnapi entries now present at top level:"
+          node -e "
+            const l = require('./package-lock.json');
+            const keys = Object.keys(l.packages).filter(k => k.startsWith('node_modules/@emnapi/'));
+            for (const k of keys) console.log('  ' + k + ' -> ' + l.packages[k].version);
+          "
+
+      - name: Commit and push to a scratch branch
+        if: steps.changed.outputs.any == 'true'
+        id: push
+        run: |
+          branch="fix/lockfile-repair-${{ github.run_number }}"
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git checkout -b "$branch"
+          git add package-lock.json
+
+          # Separate -m flags rather than one multi-line string: an unindented
+          # message body inside a YAML block scalar terminates the block and
+          # makes this file unparseable.
+          git commit \
+            -m "fix(deps): regenerate package-lock.json on Linux" \
+            -m "The lockfile was generated on Windows, where npm never resolves the wasm32-wasi fallback bindings. It therefore recorded @tailwindcss/oxide-wasm32-wasi and @img/sharp-wasm32 without the @emnapi/core and @emnapi/runtime entries they depend on, and npm ci failed on Linux with 'Missing: @emnapi/runtime@1.11.3 from lock file'." \
+            -m "Regenerated by a plain npm install on ubuntu-latest. package.json is unchanged; no dependency was added, removed or bumped, and no resolution-bypassing flag was used. Verified here by npm ci from a clean node_modules, followed by blog:lint, lint, typecheck and build." \
+            -m "Generated by .github/workflows/lockfile-repair.yml, which is temporary and should be deleted once this is merged."
+
+          git push origin "$branch"
+          echo "branch=$branch" >> "$GITHUB_OUTPUT"
+          echo "::notice::Pushed $branch. Review the diff, then merge it into main."
+
+      - name: What to do next
+        if: always()
+        run: |
+          if [ "${{ steps.changed.outputs.any }}" = "true" ]; then
+            echo "Branch pushed: ${{ steps.push.outputs.branch }}"
+            echo "1. Review the package-lock.json diff on that branch."
+            echo "2. Merge it into main."
+            echo "3. Re-run 'Validate blog' and confirm 'Lint, typecheck, build' is green."
+            echo "4. Delete .github/workflows/lockfile-repair.yml and .github/scripts/validate-lock.cjs."
+          else
+            echo "Nothing changed. Investigate before re-running."
+          fi
