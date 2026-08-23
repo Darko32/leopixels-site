@@ -1,25 +1,31 @@
 name: Auto-merge blog posts
 
-# Closes the loop: an automated post merges itself once every required check
-# passes, with no human in the path.
+# Closes the loop: an automated post merges itself once validation passes, with
+# no human in the path.
 #
 # ─────────────────────────────────────────────────────────────────────────────
-# WHY THIS DOES NOT MERGE ANYTHING ITSELF
+# THIS WORKFLOW IS THE GATE. READ THIS BEFORE CHANGING IT.
 # ─────────────────────────────────────────────────────────────────────────────
-# This workflow only REQUESTS auto-merge. GitHub holds the pull request and
-# merges it when, and only when, every required status check on `main` has
-# passed. The decision to merge is therefore enforced by GitHub, not by code in
-# this file.
+# The earlier version of this file asked GitHub to hold the pull request via
+# `gh pr merge --auto`, so GitHub enforced the merge condition and a bug here
+# could only fail to queue a merge, never cause one.
 #
-# That is the whole safety argument. A workflow that read the check states and
-# called merge itself would put the gate in a shell script, where one wrong
-# condition ships a broken post to production. Here, a bug in this file can at
-# worst fail to queue a merge. It cannot cause one.
+# That is no longer possible: this repository is private on a plan where
+# rulesets cannot be enforced and auto-merge is unavailable. So the decision
+# moved into this file, and a wrong condition here merges something it should
+# not. Every guard below exists because nothing outside this workflow will
+# catch a mistake in it.
 #
-# LOAD-BEARING: this only works if `main` has branch protection with the
-# `Lint, typecheck, build` check marked REQUIRED. Without required checks,
-# GitHub treats an auto-merge request as satisfiable immediately and merges
-# straight away. Protection is not optional decoration here; it is the gate.
+# Two structural properties do the heavy lifting:
+#
+#   1. workflow_run always executes the copy of this file on the DEFAULT
+#      BRANCH, never the pull request's copy. A pull request therefore cannot
+#      weaken its own merge gate by editing this file.
+#   2. This job never checks out the pull request's code. It only calls the
+#      API. The write token is therefore never exposed to code from the branch
+#      being merged, which is also why validate-blog.yml keeps a read-only
+#      token: it runs npm ci, build and lint on pull request code, and must
+#      never hold merge rights.
 #
 # ─────────────────────────────────────────────────────────────────────────────
 # THE SCOPE GUARD
@@ -28,17 +34,17 @@ name: Auto-merge blog posts
 # post. A confused or hijacked generation run could produce a perfectly valid
 # build that also edits the routes, the deploy workflow, or this file.
 #
-# So auto-merge is requested only when every changed file lives under
-# content/blog/. Anything wider is left open for a person, with a comment
-# explaining why. That bounds the unattended path to content, permanently,
-# regardless of what the agent decides to do.
+# So a merge happens only when every changed file lives under content/blog/.
+# Anything wider is left open for a person, with a comment explaining why. That
+# bounds the unattended path to content, permanently, whatever the agent does.
 
 on:
-  pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_run:
+    workflows: ['Validate blog']
+    types: [completed]
 
 concurrency:
-  group: auto-merge-${{ github.event.pull_request.number }}
+  group: auto-merge-${{ github.event.workflow_run.head_branch }}
   cancel-in-progress: false
 
 permissions:
@@ -46,34 +52,130 @@ permissions:
   pull-requests: write
 
 jobs:
-  request-auto-merge:
-    name: Request auto-merge
+  merge:
+    name: Merge if validation passed
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
 
-    # Same-repository branches only. A fork's pull request never reaches this
-    # job, so a stranger cannot aim it at their own head ref.
+    # Same-repository automated blog branches only. A fork, a manual
+    # workflow_dispatch run, or any other branch never reaches this job.
     if: >-
-      github.event.pull_request.head.repo.full_name == github.repository &&
-      startsWith(github.event.pull_request.head.ref, 'blog/auto/') &&
-      github.event.pull_request.draft == false
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.head_repository.full_name == github.repository &&
+      startsWith(github.event.workflow_run.head_branch, 'blog/auto/')
 
     steps:
-      - name: Check the pull request only touches blog content
-        id: scope
+      # ── Resolve the pull request ────────────────────────────────────────
+      # workflow_run carries the branch and commit, not the pull request. Look
+      # it up, and treat "no open pull request" as a normal, quiet outcome:
+      # validation also runs on pushes that have not been opened as one yet.
+      - name: Resolve the pull request
+        id: pr
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR: ${{ github.event.pull_request.number }}
           REPO: ${{ github.repository }}
+          OWNER: ${{ github.repository_owner }}
+          BRANCH: ${{ github.event.workflow_run.head_branch }}
+        run: |
+          set -euo pipefail
+
+          pr=$(gh api "repos/$REPO/pulls?state=open&head=$OWNER:$BRANCH" --jq '.[0] // empty')
+
+          if [ -z "$pr" ]; then
+            echo "::notice::No open pull request for $BRANCH. Nothing to do."
+            echo "found=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          number=$(echo "$pr" | jq -r '.number')
+          head_sha=$(echo "$pr" | jq -r '.head.sha')
+          draft=$(echo "$pr" | jq -r '.draft')
+          url=$(echo "$pr" | jq -r '.html_url')
+
+          echo "Pull request #$number"
+          echo "  head sha : $head_sha"
+          echo "  draft    : $draft"
+
+          {
+            echo "found=true"
+            echo "number=$number"
+            echo "head_sha=$head_sha"
+            echo "draft=$draft"
+            echo "url=$url"
+          } >> "$GITHUB_OUTPUT"
+
+      # ── Guard 1: validation actually succeeded ──────────────────────────
+      # The event payload says so, but this re-asks the API for the named check
+      # on that exact commit. Two independent answers have to agree before
+      # anything merges.
+      - name: Verify the validation check passed
+        id: checks
+        if: steps.pr.outputs.found == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.event.workflow_run.head_sha }}
+          EVENT_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+        run: |
+          set -euo pipefail
+
+          echo "workflow_run conclusion : $EVENT_CONCLUSION"
+
+          conclusion=$(gh api "repos/$REPO/commits/$SHA/check-runs" \
+            --jq '.check_runs[] | select(.name == "Lint, typecheck, build") | .conclusion' \
+            | head -1)
+
+          echo "check run conclusion    : ${conclusion:-<none found>}"
+
+          if [ "$EVENT_CONCLUSION" = "success" ] && [ "$conclusion" = "success" ]; then
+            echo "passed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "passed=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Validation did not pass. The pull request stays open."
+          fi
+
+      # ── Guard 2: the head has not moved ─────────────────────────────────
+      # GitHub's native auto-merge handled this for free. Here it is explicit:
+      # if someone pushed after validation passed, the commit that was tested
+      # is not the commit that would merge.
+      - name: Verify the tested commit is still the head
+        id: sha
+        if: steps.pr.outputs.found == 'true' && steps.checks.outputs.passed == 'true'
+        env:
+          TESTED: ${{ github.event.workflow_run.head_sha }}
+          CURRENT: ${{ steps.pr.outputs.head_sha }}
+        run: |
+          set -euo pipefail
+
+          echo "tested  : $TESTED"
+          echo "current : $CURRENT"
+
+          if [ "$TESTED" = "$CURRENT" ]; then
+            echo "match=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "match=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::The branch moved after validation. A newer run will handle the new commit."
+          fi
+
+      # ── Guard 3: scope ──────────────────────────────────────────────────
+      - name: Check the pull request only touches blog content
+        id: scope
+        if: steps.pr.outputs.found == 'true' && steps.sha.outputs.match == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          PR: ${{ steps.pr.outputs.number }}
         run: |
           set -euo pipefail
 
           files=$(gh api --paginate "repos/$REPO/pulls/$PR/files" --jq '.[].filename')
 
           if [ -z "$files" ]; then
-            echo "No files changed. Refusing to auto-merge an empty pull request."
-            echo "ok=false" >> "$GITHUB_OUTPUT"
-            echo "reason=the pull request changes no files" >> "$GITHUB_OUTPUT"
+            echo "The pull request changes no files."
+            {
+              echo "ok=false"
+              echo "reason=the pull request changes no files"
+            } >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
@@ -100,47 +202,83 @@ jobs:
           echo "Every changed file is under content/blog/."
           echo "ok=true" >> "$GITHUB_OUTPUT"
 
-      - name: Enable auto-merge
-        if: steps.scope.outputs.ok == 'true'
+      # ── Merge ───────────────────────────────────────────────────────────
+      # `sha` is not decoration. It tells GitHub to refuse the merge unless the
+      # head is still exactly the tested commit, so the race between guard 2
+      # and this call is closed at GitHub's end rather than assumed away.
+      - name: Squash merge
+        id: merge
+        if: >-
+          steps.pr.outputs.found == 'true' &&
+          steps.pr.outputs.draft == 'false' &&
+          steps.checks.outputs.passed == 'true' &&
+          steps.sha.outputs.match == 'true' &&
+          steps.scope.outputs.ok == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_URL: ${{ github.event.pull_request.html_url }}
+          REPO: ${{ github.repository }}
+          PR: ${{ steps.pr.outputs.number }}
+          SHA: ${{ steps.pr.outputs.head_sha }}
+          BRANCH: ${{ github.event.workflow_run.head_branch }}
         run: |
           set -euo pipefail
 
-          # --auto queues the merge. GitHub performs it only once the required
-          # checks pass. If they never pass, the pull request simply stays open.
-          if gh pr merge --auto --squash --delete-branch "$PR_URL"; then
-            echo "::notice::Auto-merge queued. GitHub will merge once required checks pass."
-          else
-            echo "::error::Could not enable auto-merge."
-            echo "The usual causes, in order of likelihood:"
-            echo "  1. Auto-merge is not enabled for the repository."
-            echo "     Settings > General > Pull Requests > Allow auto-merge."
-            echo "  2. Branch protection on main has no required status checks,"
-            echo "     so there is nothing for auto-merge to wait on."
-            echo "     Settings > Branches > main > Require status checks."
-            exit 1
-          fi
+          echo "Merging #$PR at $SHA"
 
-      - name: Explain why this was left for a human
-        if: steps.scope.outputs.ok == 'false'
+          gh api -X PUT "repos/$REPO/pulls/$PR/merge" \
+            -f merge_method=squash \
+            -f sha="$SHA"
+
+          echo "::notice::Merged #$PR. Vercel will deploy from main."
+
+          # Tidy up. A failure here does not matter: the merge already happened.
+          gh api -X DELETE "repos/$REPO/git/refs/heads/$BRANCH" || \
+            echo "::warning::Could not delete $BRANCH. Harmless; remove it by hand."
+
+      # ── Comment: validation failed ──────────────────────────────────────
+      - name: Comment on failed validation
+        if: steps.pr.outputs.found == 'true' && steps.checks.outputs.passed == 'false'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_URL: ${{ github.event.pull_request.html_url }}
+          URL: ${{ steps.pr.outputs.url }}
+          RUN_URL: ${{ github.event.workflow_run.html_url }}
+        run: |
+          set -euo pipefail
+
+          {
+            echo "**Not merged: validation did not pass.**"
+            echo ""
+            echo "\`Lint, typecheck, build\` did not conclude successfully for this commit, so"
+            echo "auto-merge was withheld. The pull request stays open and nothing reached"
+            echo "\`main\`."
+            echo ""
+            echo "[See the failed run]($RUN_URL)"
+            echo ""
+            echo "Push a fix to this branch and validation will run again. If it passes, this"
+            echo "pull request merges on its own."
+          } > /tmp/comment.md
+
+          gh pr comment "$URL" --body-file /tmp/comment.md
+
+      # ── Comment: out of scope ───────────────────────────────────────────
+      - name: Comment on an out-of-scope pull request
+        if: steps.pr.outputs.found == 'true' && steps.scope.outputs.ok == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          URL: ${{ steps.pr.outputs.url }}
           REASON: ${{ steps.scope.outputs.reason }}
           OUTSIDE: ${{ steps.scope.outputs.outside }}
         run: |
           set -euo pipefail
 
           {
-            echo "**Auto-merge was not requested for this pull request.**"
+            echo "**Not merged: this pull request is outside the automated scope.**"
             echo ""
             echo "The scope guard in \`.github/workflows/auto-merge-blog.yml\` allows unattended"
             echo "merging only when every changed file lives under \`content/blog/\`, so an"
             echo "automated run can never merge a change to the build, the routes or CI itself."
             echo ""
-            echo "This one was held back because $REASON."
+            echo "Held back because $REASON."
             if [ -n "${OUTSIDE:-}" ]; then
               echo ""
               echo "Files outside the allowed scope:"
@@ -150,8 +288,8 @@ jobs:
               echo '```'
             fi
             echo ""
-            echo "Validation still runs normally. Review and merge it yourself if the change is intended."
+            echo "Validation still ran. Review and merge it yourself if the change is intended."
           } > /tmp/comment.md
 
-          gh pr comment "$PR_URL" --body-file /tmp/comment.md
-          echo "::warning::Auto-merge withheld: $REASON"
+          gh pr comment "$URL" --body-file /tmp/comment.md
+          echo "::warning::Merge withheld: $REASON"
