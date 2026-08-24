@@ -15,9 +15,10 @@
 import type { BlogPost } from './_schema';
 import { isPublished, postLastmod } from './_schema';
 import { websiteVsGoogleBusinessProfile } from './website-vs-google-business-profile/post';
+import { zzTestMerge } from './zz-test-merge/post';
 
 /** Every post: published, scheduled and draft alike. */
-export const blogPosts: BlogPost[] = [websiteVsGoogleBusinessProfile];
+export const blogPosts: BlogPost[] = [websiteVsGoogleBusinessProfile, zzTestMerge];
 
 /**
  * Drafts and not-yet-due posts render in `next dev` so either can be reviewed
