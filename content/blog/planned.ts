@@ -61,15 +61,6 @@ export const plannedTopics: PlannedTopic[] = [
     status: 'published',
     publishAt: '2026-08-17T09:00:00Z',
   },
-  {
-    slug: 'zz-test-merge',
-    title: 'Auto-merge pipeline test fixture',
-    intent: 'Prove the automation can squash merge a validated blog-only pull request',
-    theme: 'websites as a trades tool',
-    status: 'written',
-    publishAt: '2099-06-01T09:00:00Z',
-    note: 'Test fixture for the merge path, not a real topic. Remove during housekeeping.',
-  },
 ];
 
 /** Every slug the ledger has ever seen, in any status. */

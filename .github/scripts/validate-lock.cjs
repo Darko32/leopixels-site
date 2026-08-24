@@ -1,5 +1,5 @@
 /**
- * Lockfile consistency check. TEMPORARY, delete with lockfile-repair.yml.
+ * Lockfile consistency check.
  *
  * Walks every dependency edge recorded in package-lock.json and checks that a
  * satisfying entry exists at a position npm could actually resolve it from,
@@ -111,5 +111,9 @@ for (const problem of problems) {
   console.log('  ' + problem.from);
   console.log('      needs ' + problem.name + '@' + problem.range + '  ->  ' + problem.got);
 }
-console.log('\nRegenerate the lockfile on Linux. See .github/workflows/lockfile-repair.yml');
+console.log('\nThe lockfile needs repairing. Regenerating it on this machine may not be');
+console.log('enough: npm skips optional platform subtrees that do not apply here, so a');
+console.log('hole can persist through a full regeneration and only surface on Linux CI.');
+console.log('If npm cannot close it, add the missing entries directly, taking version,');
+console.log('resolved and integrity from `npm view <pkg>@<version>`.');
 process.exit(1);
