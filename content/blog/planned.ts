@@ -61,6 +61,15 @@ export const plannedTopics: PlannedTopic[] = [
     status: 'published',
     publishAt: '2026-08-17T09:00:00Z',
   },
+  {
+    slug: 'phone-number-placement-trades-website',
+    title: 'Where the Phone Number Belongs on a One-Page Trades Website',
+    intent:
+      'Decide where a phone number should sit on a mobile trades website and how it should be built so it is actually tappable',
+    theme: 'the phone call',
+    status: 'written',
+    publishAt: '2026-09-01T09:00:00Z',
+  },
 ];
 
 /** Every slug the ledger has ever seen, in any status. */
