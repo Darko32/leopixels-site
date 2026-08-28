@@ -31,7 +31,7 @@ Takes a topic (given or chosen), researches it against real sources, writes it i
 | `publishedAt` | Now, unless the user says otherwise | The next free slot from `nextPublishSlot()`, honouring lead time |
 | Locales | Bilingual expected, English-only tolerated with a stated reason | **Bilingual required.** Cannot ship without `mk` |
 | Ledger | Optional | **Required.** Append the entry before you finish |
-| Git | Write files, stop | Commit to `blog/auto/<slug>`, push, open a PR |
+| Git | Write files, stop | Commit to `blog/auto/<slug>`, then `npm run blog:pr` |
 | Merging | Human | **Never yours.** CI validates, and merging is out of your hands |
 
 ### What automation mode may and may not do
@@ -45,14 +45,15 @@ May: create `blog/auto/<slug>`, commit only the two files a post touches plus th
 
 You do **not** enable auto-merge yourself. Open the pull request and stop; the workflow requests it, and GitHub merges only once every required check is green.
 
+**Both ends of the run are scripts, not judgement.** `npm run blog:preflight` decides whether the run may start; `npm run blog:pr` pushes the branch and opens the pull request. Use them rather than reasoning about branch state or reaching for `gh` — `gh` is not installed on the machine the schedule fires on, which is precisely how a run once pushed a finished post and then stopped without ever opening a pull request. Both are idempotent, so re-running either after a partial run is safe.
+
 May not, under any circumstances:
 
 - Push to `main`, or merge anything.
 - Skip, weaken or work around any validation step.
 - Force-push, amend, rebase, or touch another branch.
 - Commit a post whose `npm run blog:lint -- --external --strict` fails.
-- Continue when an automated post is already open. `schedule.maxOpenAutomatedPosts` caps it at one: if an unmerged `blog/auto/*` branch or PR exists, **stop and report**. A backlog forming behind a red CI run is the failure this prevents.
-- Run at all when `blogSchedule.enabled` is false. Check it first; if disabled, stop and say so.
+- Continue when `npm run blog:preflight` exits non-zero. It enforces `schedule.maxOpenAutomatedPosts` and the `blogSchedule.enabled` kill switch, and a backlog forming behind a red CI run is the failure that cap prevents. Do not second-guess it in either direction: a merged post leaves a local branch behind, and treating that residue as a post in flight would block every run after the first success.
 
 These are enforced by branch protection, not by your goodwill. Treat them as facts about the world rather than instructions you are choosing to follow.
 
@@ -60,10 +61,10 @@ These are enforced by branch protection, not by your goodwill. Treat them as fac
 
 Steps 1 to 8 are unchanged. The differences are at the ends:
 
-- **Step 1 (Preflight)** additionally: confirm `blogSchedule.enabled` is true; confirm no other `blog/auto/*` branch or open PR exists; create `blog/auto/<slug>` rather than `blog/<slug>`.
+- **Step 1 (Preflight)** is `npm run blog:preflight`. It checks the kill switch, the working tree and how many posts are in flight, reaps merged branches, and leaves you on an up-to-date `main`. Exit 0 means proceed; exit 1 means stop and report its last line verbatim. Then create `blog/auto/<slug>` rather than `blog/<slug>`.
 - **Step 3 (Topic pool)** draws themes from `blogSchedule.themes` and checks every candidate through `checkAgainstLedger()` in `content/blog/planned.ts` before any research. A ledger hit costs one file read; discovering it after research costs the whole run.
 - **Step 8 (Translate)** is mandatory. An automated post without `content.mk` does not ship. If you cannot produce genuine Macedonian, abandon the run rather than shipping half a post.
-- **Step 9 (Write, register, validate)** additionally: set `publishedAt` from `nextPublishSlot()`, append the `planned.ts` entry with `status: 'written'`, run `npm run blog:lint -- --external --strict` alongside lint, typecheck and build, then commit, push and open the PR.
+- **Step 9 (Write, register, validate)** additionally: set `publishedAt` from `nextPublishSlot()`, append the `planned.ts` entry with `status: 'written'`, run `npm run blog:lint -- --external --strict` alongside lint, typecheck and build, then commit and run `npm run blog:pr`. That one command pushes the branch and opens the pull request; it prints the URL. Report the URL and stop.
 
 ## Required reading, in this order
 

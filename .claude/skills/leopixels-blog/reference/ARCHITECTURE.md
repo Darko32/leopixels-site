@@ -35,6 +35,8 @@ Three modules the automation depends on. Read them rather than reimplementing wh
 | `content/blog/schedule.ts` | Editorial policy: the kill switch, publish days, the UTC hour, lead time, locales, themes. `nextPublishSlot(from, taken)` returns the next free instant; `formatSlot()` renders it in the exact shape a post stores. |
 | `content/blog/planned.ts` | The topic ledger. `checkAgainstLedger({slug, title, intent})` deduplicates on slug, title and **search intent** — two posts can share no words and still compete for one query. |
 | `scripts/blog-lint.ts` | The mechanical half of `CHECKLIST.md`, as code. |
+| `scripts/blog-preflight.ts` | Whether an automated run may start: the kill switch, a clean tree, and how many posts are genuinely in flight. Reaps merged branches so a finished run cannot block the next one. |
+| `scripts/blog-pr.ts` | Pushes the branch and opens its pull request over the REST API, with no dependency on `gh` being installed. Idempotent. |
 
 **`publishedAt` is a gate, not a label.** A post whose instant has not passed has no route, no sitemap entry and 404s in every locale. In automation mode it comes from `nextPublishSlot()`, never from your own arithmetic.
 
