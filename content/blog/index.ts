@@ -15,12 +15,14 @@
 import type { BlogPost } from './_schema';
 import { isPublished, postLastmod } from './_schema';
 import { phoneNumberPlacementTradesWebsite } from './phone-number-placement-trades-website/post';
+import { photoWeightTradesWebsite } from './photo-weight-trades-website/post';
 import { websiteVsGoogleBusinessProfile } from './website-vs-google-business-profile/post';
 
 /** Every post: published, scheduled and draft alike. */
 export const blogPosts: BlogPost[] = [
   websiteVsGoogleBusinessProfile,
   phoneNumberPlacementTradesWebsite,
+  photoWeightTradesWebsite,
 ];
 
 /**
