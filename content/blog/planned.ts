@@ -70,6 +70,15 @@ export const plannedTopics: PlannedTopic[] = [
     status: 'written',
     publishAt: '2026-09-01T09:00:00Z',
   },
+  {
+    slug: 'photo-weight-trades-website',
+    title: 'How Many Photos Slow Down a Trades Website on a Job Site',
+    intent:
+      'Decide how many photos a one-page trades website can carry and how heavy they can be before a weak mobile signal fails to load the page',
+    theme: 'websites as a trades tool',
+    status: 'written',
+    publishAt: '2026-09-03T09:00:00Z',
+  },
 ];
 
 /** Every slug the ledger has ever seen, in any status. */
