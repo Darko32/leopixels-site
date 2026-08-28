@@ -62,10 +62,19 @@ function git(...args: string[]): string {
   return execFileSync('git', args, { encoding: 'utf8' }).trim();
 }
 
-/** Like `git`, but a non-zero exit is an answer rather than a crash. */
-function gitOrNull(...args: string[]): string | null {
+/**
+ * The commit a ref points at, or null when there is no such ref.
+ *
+ * `--verify --quiet` plus a discarded stderr matters: "the branch has never
+ * been pushed" is an expected answer here, and letting rev-parse print its
+ * fatal-looking complaint about it makes a normal first run read as broken.
+ */
+function revParseOrNull(ref: string): string | null {
   try {
-    return git(...args);
+    return execFileSync('git', ['rev-parse', '--verify', '--quiet', ref], {
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    }).trim();
   } catch {
     return null;
   }
@@ -252,7 +261,7 @@ async function main(): Promise<void> {
   console.log(`  auth   : ${credential.source}`);
 
   /* ── push ── */
-  const remoteHead = gitOrNull('rev-parse', `refs/remotes/origin/${branch}`);
+  const remoteHead = revParseOrNull(`refs/remotes/origin/${branch}`);
 
   if (remoteHead === head) {
     console.log('  push   : already up to date');

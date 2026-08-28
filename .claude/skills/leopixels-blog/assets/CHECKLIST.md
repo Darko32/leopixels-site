@@ -125,4 +125,5 @@ grep -c "<loc>" .next/server/app/sitemap-blog.xml.body
 - [ ] Report the word count per language and the reading estimate.
 - [ ] Report every source cited, with its URL and its liveness verdict.
 - [ ] State plainly if `content.mk` was omitted, and why.
-- [ ] **Nothing committed. Nothing pushed.** Stop and wait.
+- [ ] Interactive mode: **nothing committed, nothing pushed.** Stop and wait.
+- [ ] Automation mode: commit, then `npm run blog:pr`, then report the pull request URL. The run is not finished until that URL exists. Still never merge.
