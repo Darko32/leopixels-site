@@ -13,7 +13,9 @@
     "build:demos": "tsx scripts/build-demos.ts",
     "demo:export": "tsx scripts/export-demo.ts",
     "blog:lint": "tsx scripts/blog-lint.ts",
-    "blog:status": "tsx scripts/blog-status.ts"
+    "blog:status": "tsx scripts/blog-status.ts",
+    "blog:preflight": "tsx scripts/blog-preflight.ts",
+    "blog:pr": "tsx scripts/blog-pr.ts"
   },
   "dependencies": {
     "clsx": "^2.1.1",
