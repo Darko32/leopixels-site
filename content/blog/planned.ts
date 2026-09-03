@@ -79,6 +79,15 @@ export const plannedTopics: PlannedTopic[] = [
     status: 'written',
     publishAt: '2026-09-03T09:00:00Z',
   },
+  {
+    slug: 'local-services-ads-cost-vs-website',
+    title: 'What Local Services Ads Cost a Trades Business, Compared to a Website',
+    intent:
+      'Decide whether pay-per-lead Local Services Ads or an owned website is the better spend for a small trades business',
+    theme: 'the money side',
+    status: 'written',
+    publishAt: '2026-09-08T09:00:00Z',
+  },
 ];
 
 /** Every slug the ledger has ever seen, in any status. */

@@ -14,6 +14,7 @@
 
 import type { BlogPost } from './_schema';
 import { isPublished, postLastmod } from './_schema';
+import { localServicesAdsCostVsWebsite } from './local-services-ads-cost-vs-website/post';
 import { phoneNumberPlacementTradesWebsite } from './phone-number-placement-trades-website/post';
 import { photoWeightTradesWebsite } from './photo-weight-trades-website/post';
 import { websiteVsGoogleBusinessProfile } from './website-vs-google-business-profile/post';
@@ -23,6 +24,7 @@ export const blogPosts: BlogPost[] = [
   websiteVsGoogleBusinessProfile,
   phoneNumberPlacementTradesWebsite,
   photoWeightTradesWebsite,
+  localServicesAdsCostVsWebsite,
 ];
 
 /**
