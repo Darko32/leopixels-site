@@ -5,8 +5,13 @@ import { faqSchema } from '@/lib/schema';
 import { Section } from '@/components/ui/Section';
 import { Container } from '@/components/ui/Container';
 import { Reveal } from '@/components/ui/Reveal';
+import { Button } from '@/components/ui/Button';
 import { SectionHeading } from '@/components/ui/Typography';
 import { JsonLd } from '@/components/ui/JsonLd';
+import type { SectionVariant } from './variant';
+
+/** How many of the questions the homepage teaser shows before linking out. */
+const TEASER_COUNT = 3;
 
 /**
  * Native <details>/<summary>: zero JavaScript, keyboard-accessible for free,
@@ -14,25 +19,33 @@ import { JsonLd } from '@/components/ui/JsonLd';
  * table in 05_CONVERSION_AND_PAYMENT.md §4 — these are the things a trades
  * owner is actually thinking, handled before they have to ask.
  */
-export async function FaqSection() {
+export async function FaqSection({ variant = 'page' }: { variant?: SectionVariant }) {
   const t = await getTranslations('home.faq');
+  const tCta = await getTranslations('cta');
+
+  const isTeaser = variant === 'teaser';
+  const keys = isTeaser ? faqKeys.slice(0, TEASER_COUNT) : faqKeys;
 
   return (
-    <Section id="faq">
-      {/* Same array drives the markup and the structured data, so the rendered
-          questions and what Google reads can never disagree. */}
-      <JsonLd
-        data={faqSchema(
-          faqKeys.map((key) => ({ question: t(`items.${key}.q`), answer: t(`items.${key}.a`) }))
-        )}
-      />
+    // See the note in HowItWorks: the id serves old inbound links, not the nav.
+    <Section id={isTeaser ? 'faq' : undefined}>
+      {/* The FAQPage entity belongs to /faq and appears there only. The teaser
+          shows three of the same answers, and two pages claiming the same FAQ
+          is the way to have neither of them trusted. */}
+      {isTeaser ? null : (
+        <JsonLd
+          data={faqSchema(
+            faqKeys.map((key) => ({ question: t(`items.${key}.q`), answer: t(`items.${key}.a`) }))
+          )}
+        />
+      )}
       <Container className="flex flex-col gap-12">
         <Reveal staggerChildren>
-          <SectionHeading eyebrow={t('eyebrow')} title={t('title')} />
+          <SectionHeading as={isTeaser ? 'h2' : 'h1'} eyebrow={t('eyebrow')} title={t('title')} />
         </Reveal>
 
         <Reveal staggerChildren className="flex flex-col">
-          {faqKeys.map((key, index) => (
+          {keys.map((key, index) => (
             <details
               key={key}
               className="reveal group border-b border-line first:border-t"
@@ -49,6 +62,14 @@ export async function FaqSection() {
             </details>
           ))}
         </Reveal>
+
+        {isTeaser ? (
+          <Reveal className="flex justify-center">
+            <Button href="/faq" variant="ghost">
+              {tCta('allQuestions')}
+            </Button>
+          </Reveal>
+        ) : null}
       </Container>
     </Section>
   );

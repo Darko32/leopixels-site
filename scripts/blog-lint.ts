@@ -67,10 +67,22 @@ function warn(post: string, rule: string, message: string, locale?: Locale): voi
  * check is exact rather than a heuristic.
  */
 function knownInternalPaths(): Set<string> {
-  const paths = new Set<string>(['/', '/demos', '/blog', '/privacy']);
+  const paths = new Set<string>([
+    '/',
+    '/demos',
+    '/how-it-works',
+    '/pricing',
+    '/faq',
+    '/blog',
+    '/privacy',
+  ]);
 
   // Homepage anchors, rendered by components/sections/*.
-  for (const id of ['how-it-works', 'pricing', 'faq', 'demos', 'get-a-demo', 'top']) {
+  //
+  // The process, pricing and FAQ anchors are deliberately absent: those are
+  // routes now. The homepage still carries the ids so old inbound links keep
+  // working, but a post written today must link the page, not the fragment.
+  for (const id of ['demos', 'get-a-demo']) {
     paths.add(`/#${id}`);
   }
 

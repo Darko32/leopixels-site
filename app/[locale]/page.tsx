@@ -37,10 +37,13 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       <DemoShowcase locale={locale} />
       <RoiMath />
       <WhatYouGet />
-      <HowItWorks />
-      <PricingSection />
+      {/* The process, the price and the questions each own a route of their
+          own. What stays here is the short version that links through — the
+          page still answers "what does it cost" without a click. */}
+      <HowItWorks variant="teaser" />
+      <PricingSection variant="teaser" />
       <Guarantee />
-      <FaqSection />
+      <FaqSection variant="teaser" />
       <FinalCta locale={locale} />
     </>
   );

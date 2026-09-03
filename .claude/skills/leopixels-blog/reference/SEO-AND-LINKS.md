@@ -9,10 +9,10 @@ Every internal target, complete. Anything not on this list does not exist — ne
 | Target | Path | Notes |
 |---|---|---|
 | Home | `/` | |
-| How it works | `/#how-it-works` | in-page anchor, verified id |
-| Pricing | `/#pricing` | verified id |
-| FAQ | `/#faq` | verified id |
-| Demo showcase | `/#demos` | verified id |
+| How it works | `/how-it-works` | a page of its own |
+| Pricing | `/pricing` | a page of its own |
+| FAQ | `/faq` | a page of its own |
+| Demo showcase | `/#demos` | in-page anchor, verified id |
 | Demo request form | `/#get-a-demo` | the CTA anchor. The route already renders a CTA; do not link this from prose. |
 | Demos hub | `/demos` | |
 | A case study | `/demos/<slug>` | **Read the slugs from `demos/index.ts`.** Four today: `redline-plumbing`, `ironwood-electric`, `agave-air`, `bighorn-roofing`. Never hardcode from memory. |
@@ -37,7 +37,7 @@ Write the prose first. Then, as a separate step, place links onto phrases the dr
 ```
 LINKED: /demos — "a working demo of the site"
 LINKED: /demos/redline-plumbing — "an emergency plumber's page"
-UNPLACED: /#pricing — no phrase in the draft names what it costs
+UNPLACED: /pricing — no phrase in the draft names what it costs
 ```
 
 ### The laws of the link pass

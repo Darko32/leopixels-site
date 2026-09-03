@@ -52,8 +52,8 @@ export const localServicesAdsCostVsWebsite = defineBlogPost({
             "None of that variability touches a website's price. A flat-rate build stays the same figure in a slow month and a busy one, because the ",
             {
               text: '$149 a month',
-              href: '/#pricing',
-              title: 'The LeoPixels homepage section listing the flat build fee and monthly cost',
+              href: '/pricing',
+              title: 'The LeoPixels pricing page listing the flat build fee and monthly cost',
             },
             ' after it pays for hosting and changes rather than for each visitor who happens to call.',
           ],
@@ -280,8 +280,8 @@ export const localServicesAdsCostVsWebsite = defineBlogPost({
             'Ниту едно од тоа колебање не го допира трошокот на сајтот. Изработка со фиксна цена останува иста бројка и во слаб и во зафатен месец, бидејќи ',
             {
               text: '149 долари месечно',
-              href: '/#pricing',
-              title: 'Делот на почетната страница на LeoPixels со фиксната изработка и месечната цена',
+              href: '/pricing',
+              title: 'Страницата со цени на LeoPixels со фиксната изработка и месечната цена',
             },
             ' по неа плаќаат за хостинг и промени, не за секој посетител што случајно се јавува.',
           ],

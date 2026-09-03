@@ -77,11 +77,11 @@ ${demoEntries()
 
 ## Key pages
 
-- [Homepage](${url('/')}): the offer, pricing, process and FAQ.
+- [Homepage](${url('/')}): the offer, the demos and the guarantee, with the process, pricing and FAQ in short.
 - [Demos](${url('/demos')}): working example sites.
-- [Pricing](${url('/#pricing')}): ${BUILD_FEE} build, ${MONTHLY_FEE} a month, what the plan covers.
-- [How it works](${url('/#how-it-works')}): the four steps.
-- [FAQ](${url('/#faq')}): the objections trades owners actually raise.
+- [Pricing](${url('/pricing')}): ${BUILD_FEE} build, ${MONTHLY_FEE} a month, what the plan covers.
+- [How it works](${url('/how-it-works')}): the four steps.
+- [FAQ](${url('/faq')}): the objections trades owners actually raise.
 - [Get a free demo](${url('/#get-a-demo')}): the request form.
 - [Privacy policy](${url('/privacy')})
 - [Macedonian version](${url('/mk')})

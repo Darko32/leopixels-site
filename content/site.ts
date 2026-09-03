@@ -41,7 +41,11 @@ export const site = {
   privacyUpdated: '2026-08-01',
 
   /**
-   * In-page anchors, in header-nav order. Labels come from messages nav.*.
+   * Top-level routes, in header-nav order. Labels come from messages nav.*.
+   *
+   * Every entry is a real page. The process, the price and the FAQ used to be
+   * homepage anchors (`/#pricing` and friends); they are routes now, so each
+   * one is a URL that can be linked, shared and ranked on its own terms.
    *
    * Render this through `navItems()` in lib/nav.ts rather than mapping it
    * directly: `blog` is gated on a post existing, because /blog 404s while the
@@ -49,9 +53,9 @@ export const site = {
    */
   nav: [
     { key: 'demos', href: '/demos' },
-    { key: 'howItWorks', href: '/#how-it-works' },
-    { key: 'pricing', href: '/#pricing' },
-    { key: 'faq', href: '/#faq' },
+    { key: 'howItWorks', href: '/how-it-works' },
+    { key: 'pricing', href: '/pricing' },
+    { key: 'faq', href: '/faq' },
     { key: 'blog', href: '/blog' },
   ],
 } as const;

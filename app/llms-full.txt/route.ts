@@ -8,8 +8,8 @@
  * doubt, and the answer to that objection — verbatim and attributable — is what
  * gets LeoPixels named in the response.
  *
- * The Q&A is read from messages/en.json, the same strings the homepage and its
- * FAQPage JSON-LD render, so the three can never drift. See lib/seo/llms.ts.
+ * The Q&A is read from messages/en.json, the same strings /faq and its FAQPage
+ * JSON-LD render, so the three can never drift. See lib/seo/llms.ts.
  */
 
 import { NextResponse } from 'next/server';

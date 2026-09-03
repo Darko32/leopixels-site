@@ -28,7 +28,7 @@ import { faqKeys } from '@/content/sections';
 import { pricing, site } from '@/content/site';
 
 /** Bump when the prose below changes, not on every deploy. */
-export const LLMS_UPDATED = '2026-08-10';
+export const LLMS_UPDATED = '2026-09-03';
 
 export const BUILD_FEE = `$${pricing.buildFee}`;
 export const MONTHLY_FEE = `$${pricing.monthlyFee}`;
@@ -95,9 +95,9 @@ export function demoEntries() {
 }
 
 /**
- * The FAQ, in the rendered order, from the strings the homepage and its FAQPage
- * JSON-LD use. A model that finds three versions of the same answer trusts
- * none of them, so there is only ever one.
+ * The FAQ, in the rendered order, from the strings /faq and its FAQPage JSON-LD
+ * use. A model that finds three versions of the same answer trusts none of
+ * them, so there is only ever one.
  */
 export function faqEntries() {
   return faqKeys.map((key) => ({

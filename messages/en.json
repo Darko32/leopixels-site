@@ -26,7 +26,10 @@
     "allDemos": "View all demos",
     "backToDemos": "All demos",
     "readPost": "Read the post",
-    "backToBlog": "All posts"
+    "backToBlog": "All posts",
+    "seeProcess": "See the full process",
+    "seePricing": "See what's included",
+    "allQuestions": "All questions"
   },
 
   "trades": {
@@ -189,6 +192,27 @@
       "title": "Get a free demo of your site.",
       "lead": "Tell us the business and the town. We'll build a working demo and send you the link within 48 hours — no payment, no phone call, no obligation.",
       "reassurance": "We reply to every enquiry within the hour during working hours."
+    }
+  },
+
+  "howItWorksPage": {
+    "meta": {
+      "title": "How it works — your demo in 48 hours",
+      "description": "Four steps from a phone number to a live website: tell us about the business, we build a free working demo within 48 hours, you look it over on your phone, and it goes live on your own domain."
+    }
+  },
+
+  "pricingPage": {
+    "meta": {
+      "title": "Pricing — $500 to build, $149 a month",
+      "description": "One price, stated plainly. $500 to build the site and $149 a month for hosting, your domain, unlimited small edits and a quarterly refresh. Cancel any time and keep the domain."
+    }
+  },
+
+  "faqPage": {
+    "meta": {
+      "title": "FAQ — what trades owners ask before buying a website",
+      "description": "Straight answers on price, cancellation, who owns the domain, how long it takes, and whether a trade that gets its work by word of mouth needs a website at all."
     }
   },
 

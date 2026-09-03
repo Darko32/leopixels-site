@@ -43,10 +43,20 @@ export type SitemapEntry = {
 /** The date the current copy landed. Seeded from the launch build. */
 const CONTENT_LAUNCHED = '2026-08-08';
 
+/**
+ * The day the process, pricing and FAQ moved off the homepage onto routes of
+ * their own. Three genuinely new URLs, and a homepage that genuinely changed —
+ * it carries the short version of each now — so all four move together.
+ */
+const PAGES_SPLIT = '2026-09-03';
+
 /** Marketing pages. Everything a buyer or a crawler should land on. */
 export const PAGES: SitemapEntry[] = [
-  { path: '/', lastmod: CONTENT_LAUNCHED, priority: 1.0 },
+  { path: '/', lastmod: PAGES_SPLIT, priority: 1.0 },
   { path: '/demos', lastmod: CONTENT_LAUNCHED, priority: 0.9 },
+  { path: '/pricing', lastmod: PAGES_SPLIT, priority: 0.9 },
+  { path: '/how-it-works', lastmod: PAGES_SPLIT, priority: 0.8 },
+  { path: '/faq', lastmod: PAGES_SPLIT, priority: 0.8 },
   ...demos.map((demo) => ({
     path: `/demos/${demo.slug}`,
     lastmod: CONTENT_LAUNCHED,
