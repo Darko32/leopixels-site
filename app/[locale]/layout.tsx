@@ -86,14 +86,8 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} className={inter.variable} suppressHydrationWarning>
-      {/*
-        `id="top"` gives the header's Home link (`/#top`) a same-page anchor to
-        scroll to — clicking Link href="/" while already on "/" is a no-op in
-        Next.js since the pathname doesn't change, so a real anchor is what
-        makes "Home" actually return to the top of the page.
-      */}
       {/* Bottom padding clears the sticky mobile CTA bar. */}
-      <body id="top" className="pb-[60px] sm:pb-0">
+      <body className="pb-[60px] sm:pb-0">
         {/*
           Marks the document as scripted before first paint. Every scroll-reveal
           rule in globals.css is scoped to `.js`, so with JavaScript off nothing

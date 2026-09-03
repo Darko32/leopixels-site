@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Link } from '@/i18n/navigation';
+import type { MouseEvent } from 'react';
+import { Link, usePathname } from '@/i18n/navigation';
 import type { Locale } from '@/i18n/routing';
 import { cn } from '@/lib/utils';
 import { Container } from '@/components/ui/Container';
@@ -40,6 +41,24 @@ export function Header({
 }) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+  const isHome = pathname === '/';
+
+  // Link href="/" while already on "/" is a no-op in Next.js — the pathname
+  // doesn't change, so nothing scrolls. Rather than force that with a "/#top"
+  // URL hack (which litters the address bar with a fragment, and stacks a new
+  // one on every click), scroll to top ourselves when already home and let
+  // the plain "/" link do a real navigation from everywhere else. Omitting an
+  // explicit `behavior` defers to the global `scroll-behavior` in globals.css,
+  // which already backs off to instant under prefers-reduced-motion.
+  const handleLogoClick = (event: MouseEvent<HTMLAnchorElement>) => {
+    if (!isHome) return;
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+      return;
+    }
+    event.preventDefault();
+    window.scrollTo({ top: 0 });
+  };
 
   useEffect(() => {
     let frame = 0;
@@ -95,7 +114,7 @@ export function Header({
               scrolled ? 'h-[58px]' : 'h-[70px]'
             )}
           >
-            <Link href="/#top" aria-label={homeLabel} className="shrink-0">
+            <Link href="/" onClick={handleLogoClick} aria-label={homeLabel} className="shrink-0">
               <Wordmark />
             </Link>
 
@@ -139,7 +158,14 @@ export function Header({
         <div className="fixed inset-0 z-200 bg-canvas lg:hidden">
           <Container>
             <div className="flex h-[70px] items-center justify-between">
-              <Link href="/#top" aria-label={homeLabel} onClick={() => setOpen(false)}>
+              <Link
+                href="/"
+                aria-label={homeLabel}
+                onClick={(event) => {
+                  handleLogoClick(event);
+                  setOpen(false);
+                }}
+              >
                 <Wordmark />
               </Link>
               <button
