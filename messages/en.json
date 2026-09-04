@@ -121,7 +121,8 @@
         "two": { "title": "We build your demo", "body": "A complete working site with your services, your area and your details. Free, and live within 48 hours." },
         "three": { "title": "You look it over", "body": "Open it on your phone, tap through it, tell us what to change. Two rounds of revisions are included." },
         "four": { "title": "It goes live on your domain", "body": "You register the domain in your name, we point it and hand you the files. Usually the same week." }
-      }
+      },
+      "domainNote": "No domain yet? We can register one for you, in your name, and set up a matching business email at the same time — or if you'd rather use one you already have, that works too."
     },
 
     "pricing": {

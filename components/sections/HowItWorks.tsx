@@ -49,6 +49,12 @@ export async function HowItWorks({ variant = 'page' }: { variant?: SectionVarian
           </ol>
         </Reveal>
 
+        {isTeaser ? null : (
+          <Reveal>
+            <p className="text-[0.9375rem] text-body">{t('domainNote')}</p>
+          </Reveal>
+        )}
+
         {isTeaser ? (
           <Reveal className="flex justify-center">
             <Button href="/how-it-works" variant="ghost">
