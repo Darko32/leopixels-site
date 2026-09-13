@@ -60,7 +60,7 @@ export default async function OpengraphImage({
             maxWidth: 900,
           }}
         >
-          {t('title')}
+          {`${t('title')} ${t('titleAccent')}`}
         </div>
 
         <div style={{ display: 'flex', gap: 28, fontSize: 26, color: 'hsl(215,18%,76%)' }}>

@@ -60,6 +60,17 @@ export const site = {
   ],
 } as const;
 
+/**
+ * What a trades business pays for one lead through Google Ads. Not our number:
+ * it is the WebFX 2026 home-services benchmark already quoted in the ROI copy,
+ * lifted out of that sentence so the comparison chart and the sentence cannot
+ * drift apart. The attribution is rendered under the chart.
+ */
+export const adsLeadCost = {
+  min: 100,
+  max: 250,
+} as const;
+
 /** The offer. One place, both locales, formatted through Intl. */
 export const pricing = {
   buildFee: 500,

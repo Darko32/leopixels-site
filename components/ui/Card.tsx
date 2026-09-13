@@ -20,10 +20,10 @@ export function Card({
     <div
       style={style}
       className={cn(
-        'rounded-card border p-7 transition-[transform,box-shadow] duration-200',
+        'rounded-card border p-6 transition-[transform,box-shadow] duration-200 sm:p-7',
         tone === 'light' ? 'border-line bg-canvas' : 'border-line-invert bg-ink-soft',
         interactive &&
-          'hover:-translate-y-0.5 hover:shadow-[0_1px_3px_hsl(215_25%_12%/.08),0_12px_32px_hsl(215_25%_12%/.1)]',
+          'hover:-translate-y-1 hover:shadow-[0_1px_3px_hsl(215_25%_12%/.08),0_16px_40px_hsl(215_25%_12%/.11)]',
         className
       )}
     >

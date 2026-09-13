@@ -18,10 +18,10 @@ export async function Footer({ locale }: { locale: Locale }) {
         <div className="grid gap-12 py-16 md:grid-cols-[1.4fr_1fr_1fr]">
           <div className="flex flex-col gap-4">
             <Wordmark tone="ink" />
-            <p className="max-w-[38ch] text-[0.9375rem]">{t('blurb')}</p>
+            <p className="max-w-[38ch] text-small">{t('blurb')}</p>
             <a
               href={`mailto:${site.email}`}
-              className="inline-flex w-fit items-center gap-2 text-[0.9375rem] font-semibold text-canvas hover:underline"
+              className="inline-flex w-fit items-center gap-2 text-small font-semibold text-canvas hover:underline"
             >
               <MailIcon />
               {site.email}
@@ -31,7 +31,7 @@ export async function Footer({ locale }: { locale: Locale }) {
           <nav aria-label={t('navHeading')} className="flex flex-col gap-3">
             <h2 className="text-eyebrow uppercase text-canvas">{t('navHeading')}</h2>
             {navItems().map((item) => (
-              <Link key={item.href} href={item.href} className="text-[0.9375rem] hover:text-canvas">
+              <Link key={item.href} href={item.href} className="text-small transition-colors hover:text-canvas">
                 {tNav(item.key)}
               </Link>
             ))}
@@ -39,7 +39,7 @@ export async function Footer({ locale }: { locale: Locale }) {
 
           <div className="flex flex-col gap-3">
             <h2 className="text-eyebrow uppercase text-canvas">{t('legalHeading')}</h2>
-            <Link href="/privacy" className="text-[0.9375rem] hover:text-canvas">
+            <Link href="/privacy" className="text-small transition-colors hover:text-canvas">
               {t('privacy')}
             </Link>
             <div className="pt-2">

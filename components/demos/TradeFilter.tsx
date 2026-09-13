@@ -90,7 +90,7 @@ function FilterButton({
       onClick={onClick}
       aria-pressed={active}
       className={cn(
-        'min-h-[44px] rounded-full px-5 text-[0.9375rem] font-bold transition-colors',
+        'min-h-[46px] rounded-full px-5 text-small font-bold transition-colors',
         active
           ? 'bg-ink text-canvas'
           : 'bg-canvas text-body ring-1 ring-line hover:bg-canvas-alt hover:text-text'

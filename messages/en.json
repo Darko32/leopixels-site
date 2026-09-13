@@ -29,7 +29,8 @@
     "backToBlog": "All posts",
     "seeProcess": "See the full process",
     "seePricing": "See what's included",
-    "allQuestions": "All questions"
+    "allQuestions": "All questions",
+    "howItWorks": "How it works"
   },
 
   "trades": {
@@ -49,35 +50,47 @@
 
     "hero": {
       "eyebrow": "Websites for trades businesses",
-      "title": "See your new website before you pay anything.",
-      "lead": "We build fast one-page websites for plumbers, HVAC techs, electricians and roofers. Tell us your business and a working demo of your site is live within 48 hours — free, no card, no phone call.",
+      "title": "See your new website.",
+      "titleAccent": "Pay only if you like it.",
+      "lead": "One-page websites for plumbers, HVAC techs, electricians and roofers. Tell us about the business and a working demo is live within 48 hours — free, no card, no phone call.",
       "badges": {
-        "one": "Live in 48 hours",
+        "one": "Demo in 48 hours",
         "two": "You own the domain and files",
         "three": "$500 build · $149/month"
-      },
-      "frameCaption": "A real LeoPixels build. Open it and tap the phone number."
+      }
     },
 
     "proof": {
       "demo": { "label": "48 hours", "detail": "From your details to a working demo you can open on your phone" },
-      "weight": { "label": "Under 50 KB", "detail": "One file, inline styles, no frameworks — it loads before they lose patience" },
+      "weight": { "label": "Under 50 KB", "detail": "One lean file with nothing extra — it loads before visitors lose patience" },
       "ownership": { "label": "You own it", "detail": "Your domain in your name, your files in your hands, any time you ask" },
       "cancel": { "label": "Cancel any time", "detail": "No lock-in, no contract trap. Stay because it works, not because you're stuck" }
     },
 
     "demos": {
       "eyebrow": "The work",
-      "title": "Open a demo. It's a real, working site.",
-      "lead": "These are complete builds, not mockups — tap the phone number, submit the quote form, run one through PageSpeed. Every demo is labelled as a sample build, because these are example businesses rather than clients.",
+      "title": "Open a demo. These are real sites, not mockups.",
+      "lead": "Tap the phone number, send the quote form, run it through PageSpeed — it all works. Each demo is a sample business, not a client, and is labelled as one.",
       "empty": "The first demos are being built. Ask for one of your own in the meantime."
     },
 
     "roi": {
       "eyebrow": "The arithmetic",
-      "title": "One Google Ads lead costs more than a month of this.",
-      "lead": "In the trades, a single lead through Google Ads runs somewhere between $100 and $250. This is $500 once, then $149 a month — hosting, your domain, every change you ask for, and the local SEO that gets you found in the first place.",
+      "title": "One Google Ads lead can cost more than a month with us.",
+      "lead": "In the trades, one lead through Google Ads runs $100 to $250. A month with us is $149 — hosting, your domain, every change you ask for, and the local SEO that gets you found in the first place.",
       "point": "If it brings you two jobs in the first month, it has already paid for itself. After that it works twenty-four hours a day for about the price of one billable hour.",
+      "compare": {
+        "ads": {
+          "label": "One Google Ads lead",
+          "unit": "per lead",
+          "caption": "Typical cost of a single lead for a home-services trade."
+        },
+        "leo": {
+          "label": "One month with LeoPixels",
+          "unit": "per month",
+          "caption": "Hosting, your domain, unlimited small edits and the search groundwork."
+        }
+      },
       "source": "Cost-per-lead range from WebFX 2026 home-services marketing benchmarks."
     },
 
@@ -88,27 +101,27 @@
       "items": {
         "call": {
           "title": "Tap-to-call, everywhere",
-          "body": "Your phone number is the largest thing on the screen the moment the page opens, and it repeats in the header, hero, emergency bar, form and footer. One tap, no thinking."
+          "body": "Your number is the biggest thing on screen the moment the page opens, and it repeats in the header, emergency bar, form and footer. One tap, no thinking."
         },
         "emergency": {
           "title": "A 24/7 emergency bar",
-          "body": "A standing call-now band directly under the hero. For emergency trades it is consistently the highest-converting element on the whole page."
+          "body": "A call-now band right under the hero. For emergency trades it is consistently the highest-converting element on the page."
         },
         "services": {
           "title": "Your actual services, named",
-          "body": "Six real jobs you perform, written the way a customer would search for them — not a generic list of categories that could belong to anyone."
+          "body": "Six real jobs you do, written the way customers search for them — not generic categories that could belong to anyone."
         },
         "area": {
           "title": "A service area that ranks",
-          "body": "The towns and neighbourhoods you cover, listed by name, plus a map. It is the most underused local-SEO asset on trades websites."
+          "body": "The towns and neighbourhoods you cover, named one by one, plus a map — the most underused local-SEO asset on trades sites."
         },
         "form": {
           "title": "A four-field quote form",
-          "body": "Name, phone, what they need, and an optional sentence. Every field past four costs you enquiries, so there aren't any."
+          "body": "Name, phone, what they need and an optional note. Every field past four costs enquiries, so there aren't any."
         },
         "seo": {
           "title": "Search groundwork built in",
-          "body": "One H1 naming your service and city, business schema with your hours and service area, real alt text, a sitemap. Done on every build, so it can't be forgotten."
+          "body": "An H1 naming your service and city, business schema, real alt text and a sitemap — on every build, so it can't be forgotten."
         }
       }
     },
@@ -117,10 +130,26 @@
       "eyebrow": "How it works",
       "title": "Four steps. Live this week.",
       "steps": {
-        "one": { "title": "Tell us about the business", "body": "Your trade, your town, your phone number. Two minutes, and we take the rest from your Google listing." },
-        "two": { "title": "We build your demo", "body": "A complete working site with your services, your area and your details. Free, and live within 48 hours." },
-        "three": { "title": "You look it over", "body": "Open it on your phone, tap through it, tell us what to change. Two rounds of revisions are included." },
-        "four": { "title": "It goes live on your domain", "body": "You register the domain in your name, we point it and hand you the files. Usually the same week." }
+        "one": {
+          "title": "Tell us about the business",
+          "short": "Your trade, your town, your phone number. Two minutes.",
+          "body": "Your trade, your town, your phone number. Two minutes, and we take the rest from your Google listing."
+        },
+        "two": {
+          "title": "We build your demo",
+          "short": "A complete working site, free, within 48 hours.",
+          "body": "A complete working site with your services, your area and your details. Free, and live within 48 hours."
+        },
+        "three": {
+          "title": "You look it over",
+          "short": "Open it on your phone and tell us what to change.",
+          "body": "Open it on your phone, tap through it, tell us what to change. Two rounds of revisions are included."
+        },
+        "four": {
+          "title": "It goes live on your domain",
+          "short": "Your domain, your files — usually the same week.",
+          "body": "You register the domain in your name, we point it and hand you the files. Usually the same week."
+        }
       },
       "domainNote": "No domain yet? We can register one for you, in your name, and set up a matching business email at the same time — or if you'd rather use one you already have, that works too."
     },
@@ -129,8 +158,9 @@
       "eyebrow": "Pricing",
       "title": "$500 to build. $149 a month.",
       "lead": "One price, stated plainly. No platform fee, no separate hosting bill, nothing that appears later.",
-      "buildLabel": "one-time build",
-      "monthlyLabel": "per month",
+      "buildLabel": "One-time build",
+      "monthlyLabel": "Hosting, domain and edits",
+      "monthlySuffix": "/month",
       "includesHeading": "The monthly plan covers",
       "includes": {
         "one": "Hosting, SSL and your domain and DNS managed",
@@ -139,19 +169,40 @@
         "four": "A quarterly refresh so the site never goes stale",
         "five": "No platform fee and no third-party hosting bill on top"
       },
-      "note": "Cancel any time with 30 days' notice. You keep the domain and we send you the files."
+      "note": "Cancel any time with 30 days' notice. You keep the domain and we send you the files.",
+      "includesShort": {
+        "one": "Hosting, SSL and domain",
+        "two": "Unlimited small edits",
+        "three": "Monthly speed check"
+      }
     },
 
     "guarantee": {
       "eyebrow": "The guarantee",
       "title": "You own your domain. You own your files.",
-      "body": "The domain is registered in your name — we never hold it. If you ever want to leave, we send you the complete site files and you can host them anywhere. No contract trap, no hostage situation.",
-      "closing": "We would rather you stayed because the site is working."
+      "body": "No contract trap and no hostage situation. If you ever decide to leave, everything that is yours leaves with you.",
+      "closing": "We would rather you stayed because the site is working.",
+      "points": {
+        "domain": {
+          "title": "Registered in your name",
+          "body": "The domain is yours from the day it is bought. We never hold it."
+        },
+        "files": {
+          "title": "The files are yours",
+          "body": "Ask, and we send you the complete site. Host it wherever you like."
+        },
+        "cancel": {
+          "title": "Cancel any time",
+          "body": "Thirty days' notice, no exit fee and no argument."
+        }
+      }
     },
 
     "faq": {
       "eyebrow": "Before you ask",
       "title": "The questions we get most.",
+      "lead": "Straight answers to what trades owners ask before they commit.",
+      "more": "Something else on your mind?",
       "items": {
         "wordOfMouth": {
           "q": "I get all my work from word of mouth.",
@@ -164,6 +215,14 @@
         "facebook": {
           "q": "I already have a Facebook page.",
           "a": "That's rented land. You don't own it, it barely shows up in search, and the platform can change or lose it tomorrow. Your own site is an asset you control."
+        },
+        "provide": {
+          "q": "What do you need from me?",
+          "a": "The business name, your trade, the town you work in and a phone number. If you have photos of your own jobs we'll use them; if you don't, we start from your Google listing."
+        },
+        "ownDomain": {
+          "q": "Can I use a domain I already have?",
+          "a": "Yes. We point it at the new site and nothing changes hands. If you don't have one yet we can register it for you — in your name — and set up a matching business email at the same time."
         },
         "isAi": {
           "q": "Is this AI? Is it just a template?",
@@ -184,15 +243,27 @@
         "timeline": {
           "q": "How fast can it actually be live?",
           "a": "The demo is live within 48 hours of you asking. Once you approve it and the domain is sorted, the real site usually goes live the same week."
+        },
+        "maintain": {
+          "q": "Do you look after the site once it's live?",
+          "a": "Yes — that's what the monthly plan is: hosting and SSL, uptime monitoring, a monthly speed check, a quarterly refresh, and small edits like text, photos or hours done in 24 to 48 hours."
         }
       }
     },
 
     "finalCta": {
       "eyebrow": "Free demo",
-      "title": "Get a free demo of your site.",
-      "lead": "Tell us the business and the town. We'll build a working demo and send you the link within 48 hours — no payment, no phone call, no obligation.",
-      "reassurance": "We reply to every enquiry within the hour during working hours."
+      "title": "Ready to see your new website?",
+      "lead": "Tell us about the business and we'll build a working demo of your site — before you pay anything.",
+      "reassurance": "We reply to every enquiry within the hour during working hours.",
+      "orEmail": "Rather just email?",
+      "points": {
+        "one": "Demo link within 48 hours",
+        "two": "Free — no payment, no card",
+        "three": "No phone call, no obligation"
+      },
+      "formTitle": "Your free demo",
+      "formNote": "Four fields. About two minutes."
     }
   },
 

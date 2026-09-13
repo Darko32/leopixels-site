@@ -17,7 +17,7 @@ export async function DemoShowcase({ locale }: { locale: Locale }) {
 
   return (
     <Section id="demos" tone="alt">
-      <Container size="wide" className="flex flex-col gap-12">
+      <Container size="wide" className="flex flex-col gap-block">
         <Reveal staggerChildren>
           <SectionHeading eyebrow={t('eyebrow')} title={t('title')} lead={t('lead')} />
         </Reveal>
@@ -33,7 +33,7 @@ export async function DemoShowcase({ locale }: { locale: Locale }) {
           </>
         ) : (
           <Reveal>
-            <p className="text-lead">{t('empty')}</p>
+            <p className="text-lead max-w-[52ch]">{t('empty')}</p>
           </Reveal>
         )}
       </Container>

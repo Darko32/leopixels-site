@@ -6,7 +6,7 @@ import { Link, usePathname } from '@/i18n/navigation';
 import type { Locale } from '@/i18n/routing';
 import { cn } from '@/lib/utils';
 import { Container } from '@/components/ui/Container';
-import { CloseIcon, MenuIcon } from '@/components/ui/icons';
+import { ArrowRightIcon, CloseIcon, MenuIcon } from '@/components/ui/icons';
 import { LocaleSwitcher } from './LocaleSwitcher';
 import { Wordmark } from './Wordmark';
 
@@ -29,6 +29,7 @@ export function Header({
   closeLabel,
   languageLabel,
   homeLabel,
+  email,
   locale,
 }: {
   nav: NavItem[];
@@ -37,12 +38,16 @@ export function Header({
   closeLabel: string;
   languageLabel: string;
   homeLabel: string;
+  /** Shown in the mobile panel, where the header's own chrome is covered. */
+  email: string;
   locale: Locale;
 }) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const isHome = pathname === '/';
+  // The section a visitor is in, including its children (/demos/<slug>).
+  const isCurrent = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
 
   // Link href="/" while already on "/" is a no-op in Next.js — the pathname
   // doesn't change, so nothing scrolls. Rather than force that with a "/#top"
@@ -98,7 +103,7 @@ export function Header({
     // below, collapsing that panel to the header's own (58–70px) box instead
     // of the viewport once scrolled. The scroll-dependent chrome lives one
     // level down instead, on a wrapper with no fixed-position descendants.
-    <header className="sticky top-0 z-100">
+    <header className="sticky top-0 z-140">
       <div
         className={cn(
           'transition-[background-color,border-color,box-shadow] duration-200',
@@ -111,7 +116,7 @@ export function Header({
           <div
             className={cn(
               'flex items-center justify-between gap-4 transition-[height] duration-200',
-              scrolled ? 'h-[58px]' : 'h-[70px]'
+              scrolled ? 'h-[62px]' : 'h-[76px]'
             )}
           >
             <Link href="/" onClick={handleLogoClick} aria-label={homeLabel} className="shrink-0">
@@ -123,7 +128,12 @@ export function Header({
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="text-[0.9375rem] font-semibold text-body transition-colors hover:text-text"
+                  aria-current={isCurrent(item.href) ? 'page' : undefined}
+                  className={cn(
+                    'relative text-small font-semibold transition-colors hover:text-text',
+                    'after:absolute after:inset-x-0 after:-bottom-1.5 after:h-0.5 after:origin-left after:rounded-full after:bg-accent after:transition-transform after:duration-200',
+                    isCurrent(item.href) ? 'text-text after:scale-x-100' : 'text-body after:scale-x-0'
+                  )}
                 >
                   {item.label}
                 </Link>
@@ -135,9 +145,14 @@ export function Header({
 
               <Link
                 href="/#get-a-demo"
-                className="hidden min-h-[44px] items-center rounded-card bg-ink px-5 text-[0.9375rem] font-bold text-canvas transition-colors hover:bg-ink-soft sm:inline-flex"
+                className="group hidden min-h-[46px] items-center gap-2 rounded-card bg-ink px-5 text-small font-bold text-canvas transition-[background-color,transform] duration-200 hover:-translate-y-px hover:bg-ink-soft sm:inline-flex"
               >
                 {ctaLabel}
+                <ArrowRightIcon
+                  width={16}
+                  height={16}
+                  className="transition-transform duration-200 group-hover:translate-x-0.5"
+                />
               </Link>
 
               <button
@@ -157,7 +172,7 @@ export function Header({
       {open ? (
         <div className="fixed inset-0 z-200 bg-canvas lg:hidden">
           <Container>
-            <div className="flex h-[70px] items-center justify-between">
+            <div className="flex h-[76px] items-center justify-between">
               <Link
                 href="/"
                 aria-label={homeLabel}
@@ -185,7 +200,11 @@ export function Header({
                   key={item.href}
                   href={item.href}
                   onClick={() => setOpen(false)}
-                  className="border-b border-line py-4 text-h3 text-text"
+                  aria-current={isCurrent(item.href) ? 'page' : undefined}
+                  className={cn(
+                    'border-b border-line py-4 text-h3',
+                    isCurrent(item.href) ? 'text-accent-deep' : 'text-text'
+                  )}
                 >
                   {item.label}
                 </Link>
@@ -195,10 +214,22 @@ export function Header({
             <Link
               href="/#get-a-demo"
               onClick={() => setOpen(false)}
-              className="mt-8 flex min-h-[56px] items-center justify-center rounded-card bg-accent px-6 font-bold text-ink"
+              className="mt-8 flex min-h-[56px] items-center justify-center rounded-card bg-accent px-6 font-bold text-ink shadow-[0_2px_6px_hsl(38_92%_40%/.24),0_10px_28px_hsl(38_92%_40%/.22)]"
             >
               {ctaLabel}
             </Link>
+
+            {/* The top bar's switcher and contact link are behind this panel,
+                so they are repeated here rather than being unreachable. */}
+            <div className="mt-7 flex items-center justify-between gap-4 border-t border-line pt-6">
+              <a
+                href={`mailto:${email}`}
+                className="text-small font-semibold text-body transition-colors hover:text-text"
+              >
+                {email}
+              </a>
+              <LocaleSwitcher active={locale} label={languageLabel} />
+            </div>
           </Container>
         </div>
       ) : null}

@@ -5,6 +5,8 @@ import { requestDemo, type DemoRequestState } from '@/app/actions/request-demo';
 import type { Trade } from '@/demos/_schema';
 import type { Locale } from '@/i18n/routing';
 import { cn } from '@/lib/utils';
+import { ButtonSubmit } from '@/components/ui/Button';
+import { ArrowRightIcon } from '@/components/ui/icons';
 
 export interface FormCopy {
   business: { label: string; placeholder: string };
@@ -19,8 +21,12 @@ export interface FormCopy {
 const initialState: DemoRequestState = { status: 'idle' };
 
 /**
- * Four fields. 03_BUILD_SYSTEM.md §3: "every field past four costs
- * conversions", and that rule applies to our own form too.
+ * Four fields. Every field past four costs conversions, and that rule applies
+ * to our own form too.
+ *
+ * Controls are 16px on every screen size, not just from `sm` up: anything
+ * smaller makes iOS Safari zoom the page on focus, which on a phone reads as
+ * the layout breaking the moment someone taps into the form.
  *
  * Copy arrives as props rather than through useTranslations, so no
  * NextIntlClientProvider is needed and the message bundle stays server-side.
@@ -42,7 +48,7 @@ export function DemoRequestForm({
   const errorId = (name: string) => `${id}-${name}-error`;
 
   return (
-    <form action={formAction} noValidate className="flex flex-col gap-5">
+    <form action={formAction} noValidate className="flex flex-col gap-4">
       <input type="hidden" name="locale" value={locale} />
 
       {/* Honeypot — off-screen, never announced, never tabbable. */}
@@ -52,7 +58,10 @@ export function DemoRequestForm({
       </div>
 
       {state.message ? (
-        <p role="alert" className="rounded-card bg-[hsl(8_80%_95%)] px-2.5 py-2.5 text-[0.75rem] font-semibold text-[hsl(8_72%_36%)] sm:px-4 sm:py-3 sm:text-[0.9375rem]">
+        <p
+          role="alert"
+          className="rounded-card bg-[hsl(8_80%_95%)] px-4 py-3 text-small font-semibold text-[hsl(8_72%_36%)]"
+        >
           {state.message}
         </p>
       ) : null}
@@ -69,7 +78,7 @@ export function DemoRequestForm({
       />
 
       <div className="flex flex-col gap-1.5">
-        <label htmlFor={fieldId('trade')} className="text-[0.8125rem] font-bold text-text sm:text-[0.875rem]">
+        <label htmlFor={fieldId('trade')} className={LABEL}>
           {copy.trade.label}
         </label>
         <select
@@ -79,11 +88,7 @@ export function DemoRequestForm({
           defaultValue={state.values?.trade ?? ''}
           aria-invalid={state.errors?.trade ? true : undefined}
           aria-describedby={state.errors?.trade ? errorId('trade') : undefined}
-          className={cn(
-            'min-h-[46px] rounded-card border-2 bg-canvas px-2.5 text-[0.875rem] text-text sm:min-h-[52px] sm:px-4 sm:text-base',
-            'transition-colors focus:border-accent-deep focus:outline-none',
-            state.errors?.trade ? 'border-[hsl(8_72%_52%)]' : 'border-line'
-          )}
+          className={cn(CONTROL, state.errors?.trade ? INVALID : 'border-line')}
         >
           <option value="" disabled>
             {copy.trade.placeholder}
@@ -94,7 +99,9 @@ export function DemoRequestForm({
             </option>
           ))}
         </select>
-        {state.errors?.trade ? <FieldError id={errorId('trade')}>{state.errors.trade}</FieldError> : null}
+        {state.errors?.trade ? (
+          <FieldError id={errorId('trade')}>{state.errors.trade}</FieldError>
+        ) : null}
       </div>
 
       <Field
@@ -119,18 +126,35 @@ export function DemoRequestForm({
         error={state.errors?.contact}
       />
 
-      <button
+      <ButtonSubmit
         type="submit"
+        size="lg"
         disabled={pending}
-        className="mt-1 inline-flex min-h-[46px] items-center justify-center rounded-card bg-accent px-4 text-[0.875rem] font-bold text-ink transition-[transform,background-color] duration-150 hover:-translate-y-px hover:bg-accent-deep hover:text-canvas disabled:pointer-events-none disabled:opacity-70 sm:min-h-[60px] sm:px-8 sm:text-base"
+        className="mt-2 w-full disabled:pointer-events-none disabled:opacity-70"
       >
-        {pending ? copy.submitting : copy.submit}
-      </button>
+        {pending ? (
+          copy.submitting
+        ) : (
+          <>
+            {copy.submit}
+            <ArrowRightIcon />
+          </>
+        )}
+      </ButtonSubmit>
 
-      <p className="text-[0.75rem] text-body sm:text-[0.8125rem]">{copy.privacyNote}</p>
+      <p className="text-caption text-body">{copy.privacyNote}</p>
     </form>
   );
 }
+
+const LABEL = 'text-small font-bold text-text';
+
+const CONTROL = cn(
+  'min-h-[52px] rounded-card border bg-canvas px-4 text-base text-text placeholder:text-body/55',
+  'transition-colors focus:border-accent-deep focus:outline-none'
+);
+
+const INVALID = 'border-[hsl(8_72%_52%)]';
 
 function Field({
   id,
@@ -153,7 +177,7 @@ function Field({
 }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="text-[0.8125rem] font-bold text-text sm:text-[0.875rem]">
+      <label htmlFor={id} className={LABEL}>
         {label}
       </label>
       <input
@@ -165,12 +189,7 @@ function Field({
         defaultValue={defaultValue}
         aria-invalid={error ? true : undefined}
         aria-describedby={error ? errorId : undefined}
-        className={cn(
-          'min-h-[46px] rounded-card border-2 bg-canvas px-2.5 text-[0.875rem] text-text placeholder:text-body/50',
-          'placeholder:text-[13.5px] sm:min-h-[52px] sm:px-4 sm:text-base sm:placeholder:text-base',
-          'transition-colors focus:border-accent-deep focus:outline-none',
-          error ? 'border-[hsl(8_72%_52%)]' : 'border-line'
-        )}
+        className={cn(CONTROL, error ? INVALID : 'border-line')}
       />
       {error ? <FieldError id={errorId}>{error}</FieldError> : null}
     </div>

@@ -7,22 +7,24 @@ type Variant = 'primary' | 'secondary' | 'ghost' | 'inverse';
 type Size = 'md' | 'lg';
 
 const variants: Record<Variant, string> = {
-  primary: 'bg-accent text-ink hover:bg-accent-deep hover:text-canvas shadow-[0_4px_16px_hsl(38_92%_50%/.28)]',
+  primary:
+    'bg-accent text-ink shadow-[0_2px_6px_hsl(38_92%_40%/.24),0_10px_28px_hsl(38_92%_40%/.22)] hover:bg-accent-deep hover:text-canvas hover:shadow-[0_4px_10px_hsl(32_90%_36%/.3),0_14px_34px_hsl(32_90%_36%/.26)]',
   secondary: 'bg-ink text-canvas hover:bg-ink-soft',
-  ghost: 'border-2 border-line text-text hover:border-ink hover:bg-canvas-alt',
-  inverse: 'border-2 border-[hsl(0_0%_100%/.28)] text-canvas hover:bg-[hsl(0_0%_100%/.1)]',
+  ghost: 'border border-line bg-canvas text-text hover:border-ink hover:bg-canvas-alt',
+  inverse:
+    'border border-[hsl(0_0%_100%/.32)] bg-[hsl(0_0%_100%/.06)] text-canvas backdrop-blur-sm hover:border-[hsl(0_0%_100%/.6)] hover:bg-[hsl(0_0%_100%/.14)]',
 };
 
 const sizes: Record<Size, string> = {
-  // 52px minimum, inherited from the trades template's touch-target rule.
-  md: 'min-h-[52px] px-6 text-[0.9375rem]',
-  lg: 'min-h-[60px] px-8 text-base',
+  // 50px minimum, comfortably over the trades template's touch-target rule.
+  md: 'min-h-[50px] px-6 text-small',
+  lg: 'min-h-[56px] px-7 text-base',
 };
 
 function classes(variant: Variant, size: Size, className?: string) {
   return cn(
-    'inline-flex items-center justify-center gap-2 rounded-card font-bold',
-    'transition-[transform,box-shadow,background-color,border-color,color] duration-150',
+    'inline-flex items-center justify-center gap-2 rounded-card text-center font-bold leading-tight',
+    'transition-[transform,box-shadow,background-color,border-color,color] duration-200',
     'hover:-translate-y-px',
     variants[variant],
     sizes[size],
@@ -62,12 +64,7 @@ export function ExternalButton({
   showIcon = true,
 }: BaseProps & { href: string; showIcon?: boolean }) {
   return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noopener"
-      className={classes(variant, size, className)}
-    >
+    <a href={href} target="_blank" rel="noopener" className={classes(variant, size, className)}>
       {children}
       {showIcon ? <ArrowUpRightIcon /> : null}
     </a>

@@ -5,26 +5,28 @@ import { cn } from '@/lib/utils';
  * The page's rhythm. `ink` is a full-bleed dark band — used exactly three times
  * (hero, guarantee, final CTA) so each one lands rather than reading as stripes.
  *
- * Padding is clamp(80px, 12vw, 160px), roughly double the client template's.
- * Whitespace is the cheapest premium signal there is: it costs nothing at all
- * on the performance budget.
+ * Every section shares one band height, `--space-section`, so the whole page
+ * reads as a single designed column. `size="tight"` is for the short connective
+ * bands (the proof strip) that would look adrift at full height.
  */
 export function Section({
   children,
   id,
   tone = 'light',
+  size = 'default',
   className,
 }: {
   children: ReactNode;
   id?: string;
   tone?: 'light' | 'alt' | 'ink';
+  size?: 'default' | 'tight';
   className?: string;
 }) {
   return (
     <section
       id={id}
       className={cn(
-        'py-[clamp(80px,12vw,160px)]',
+        size === 'default' ? 'py-section' : 'py-section-tight',
         tone === 'light' && 'bg-canvas',
         tone === 'alt' && 'bg-canvas-alt',
         tone === 'ink' && 'bg-ink text-body-invert',

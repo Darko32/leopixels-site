@@ -64,11 +64,11 @@ export default async function DemosPage({ params }: { params: Promise<{ locale: 
               demos={demos.map((demo) => ({
                 id: demo.slug,
                 trade: demo.meta.trade,
-                card: <DemoCard demo={demo} locale={locale} />,
+                card: <DemoCard demo={demo} locale={locale} headingAs="h2" />,
               }))}
             />
           ) : (
-            <DemoGrid demos={demos} locale={locale} priorityFirst />
+            <DemoGrid demos={demos} locale={locale} priorityFirst cardHeadingAs="h2" />
           )}
         </Container>
       </Section>

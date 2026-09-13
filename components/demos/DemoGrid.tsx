@@ -14,10 +14,13 @@ export function DemoGrid({
   demos,
   locale,
   priorityFirst = false,
+  cardHeadingAs,
 }: {
   demos: DemoConfig[];
   locale: Locale;
   priorityFirst?: boolean;
+  /** Heading level for every card title; see DemoCard. */
+  cardHeadingAs?: 'h2' | 'h3';
 }) {
   if (demos.length === 0) return null;
 
@@ -48,6 +51,7 @@ export function DemoGrid({
             locale={locale}
             layout={single ? 'feature' : 'grid'}
             priority={priorityFirst && index === 0}
+            headingAs={cardHeadingAs}
           />
         </div>
       ))}

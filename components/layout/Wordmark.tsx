@@ -17,14 +17,14 @@ export function Wordmark({
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-2.5 text-[1.0625rem] font-extrabold tracking-[-0.02em]',
+        'inline-flex items-center gap-2.5 text-[1.125rem] font-extrabold tracking-[-0.02em]',
         tone === 'light' ? 'text-text' : 'text-canvas',
         className
       )}
     >
       <svg
-        width="24"
-        height="24"
+        width="26"
+        height="26"
         viewBox="0 0 24 24"
         aria-hidden="true"
         focusable="false"

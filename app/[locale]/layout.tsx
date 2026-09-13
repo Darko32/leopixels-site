@@ -124,6 +124,7 @@ export default async function LocaleLayout({
             closeLabel={tA11y('closeMenu')}
             languageLabel={tA11y('language')}
             homeLabel={tA11y('home')}
+            email={site.email}
           />
 
           <main id="main">{children}</main>
