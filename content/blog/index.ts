@@ -17,6 +17,7 @@ import { isPublished, postLastmod } from './_schema';
 import { localServicesAdsCostVsWebsite } from './local-services-ads-cost-vs-website/post';
 import { phoneNumberPlacementTradesWebsite } from './phone-number-placement-trades-website/post';
 import { photoWeightTradesWebsite } from './photo-weight-trades-website/post';
+import { speedToQuoteTradesBusiness } from './speed-to-quote-trades-business/post';
 import { websiteVsGoogleBusinessProfile } from './website-vs-google-business-profile/post';
 
 /** Every post: published, scheduled and draft alike. */
@@ -25,6 +26,7 @@ export const blogPosts: BlogPost[] = [
   phoneNumberPlacementTradesWebsite,
   photoWeightTradesWebsite,
   localServicesAdsCostVsWebsite,
+  speedToQuoteTradesBusiness,
 ];
 
 /**

@@ -88,6 +88,15 @@ export const plannedTopics: PlannedTopic[] = [
     status: 'written',
     publishAt: '2026-09-08T09:00:00Z',
   },
+  {
+    slug: 'speed-to-quote-trades-business',
+    title: 'How Fast You Need to Quote a Job Before the Customer Moves On',
+    intent:
+      'Decide how fast a trades business needs to answer and quote a job request before the customer books a competitor instead',
+    theme: 'running the business',
+    status: 'written',
+    publishAt: '2026-09-22T09:00:00Z',
+  },
 ];
 
 /** Every slug the ledger has ever seen, in any status. */
