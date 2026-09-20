@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react';
-import { getTranslations } from 'next-intl/server';
-import { adsLeadCost, pricing } from '@/content/site';
+import { getLocale, getTranslations } from 'next-intl/server';
+import { adsLeadCost, pricingFor } from '@/content/site';
 import { formatMoney } from '@/lib/money';
 import { cn } from '@/lib/utils';
 import { Section } from '@/components/ui/Section';
@@ -28,6 +28,7 @@ import { Lead, SectionHeading } from '@/components/ui/Typography';
  */
 export async function RoiMath() {
   const t = await getTranslations('home.roi');
+  const fees = pricingFor(await getLocale());
 
   const scale = adsLeadCost.max;
   const at = (amount: number) => `${(amount / scale) * 100}%`;
@@ -51,7 +52,7 @@ export async function RoiMath() {
             <Figure
               tone="leo"
               label={t('compare.leo.label')}
-              value={formatMoney(pricing.monthlyFee)}
+              value={formatMoney(fees.monthlyFee)}
               unit={t('compare.leo.unit')}
               caption={t('compare.leo.caption')}
             />
@@ -67,7 +68,7 @@ export async function RoiMath() {
               />
               <span
                 className="absolute top-1/2 size-5 -translate-x-1/2 -translate-y-1/2 rounded-full border-[3px] border-canvas-alt bg-accent shadow-[0_2px_8px_hsl(38_92%_30%/.4)]"
-                style={{ left: at(pricing.monthlyFee) }}
+                style={{ left: at(fees.monthlyFee) }}
               />
             </div>
             <div className="relative h-5 text-caption font-semibold tabular-nums">
@@ -75,8 +76,8 @@ export async function RoiMath() {
               <ScaleLabel left={at(adsLeadCost.min)} className="text-text">
                 {formatMoney(adsLeadCost.min)}
               </ScaleLabel>
-              <ScaleLabel left={at(pricing.monthlyFee)} className="text-accent-deep">
-                {formatMoney(pricing.monthlyFee)}
+              <ScaleLabel left={at(fees.monthlyFee)} className="text-accent-deep">
+                {formatMoney(fees.monthlyFee)}
               </ScaleLabel>
               <span className="absolute right-0 text-text">{formatMoney(adsLeadCost.max)}</span>
             </div>

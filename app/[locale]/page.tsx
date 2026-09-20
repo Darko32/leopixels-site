@@ -7,7 +7,6 @@ import { buildMetadata } from '@/lib/seo';
 import { Hero } from '@/components/sections/Hero';
 import { ProofStrip } from '@/components/sections/ProofStrip';
 import { DemoShowcase } from '@/components/sections/DemoShowcase';
-import { RoiMath } from '@/components/sections/RoiMath';
 import { WhatYouGet } from '@/components/sections/WhatYouGet';
 import { HowItWorks } from '@/components/sections/HowItWorks';
 import { PricingSection } from '@/components/sections/Pricing';
@@ -35,7 +34,10 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       <Hero />
       <ProofStrip />
       <DemoShowcase locale={locale} />
-      <RoiMath />
+      {/* The Google Ads comparison is out while its benchmark is quoted in
+          dollars and the prices are in euros — one shared scale across two
+          currencies would imply a rate that does not exist. Restore it with a
+          euro cost-per-lead range in content/site.ts. */}
       <WhatYouGet />
       {/* The process, the price and the questions each own a route of their
           own. What stays here is the short version that links through — the

@@ -10,7 +10,7 @@
  * 1. Every claim must also be true on a page a human can open. A model that
  *    quotes a price here and finds a different one on / stops quoting you.
  * 2. Prices and timings appear as literal numbers, not ranges or adjectives.
- *    "$500" gets quoted. "affordable" gets dropped.
+ *    "€450" gets quoted. "affordable" gets dropped.
  * 3. Never add a claim the site does not make: no client counts, no
  *    guarantees, no ratings, no case-study results. Fabricated proof is the
  *    fastest way to lose a deal at the point the buyer checks.
@@ -25,13 +25,14 @@ import en from '@/messages/en.json';
 import { demos } from '@/demos';
 import { TRADES } from '@/demos/_schema';
 import { faqKeys } from '@/content/sections';
-import { pricing, site } from '@/content/site';
+import { pricing, pricingFor, site } from '@/content/site';
+import { formatMoney } from '@/lib/money';
 
 /** Bump when the prose below changes, not on every deploy. */
 export const LLMS_UPDATED = '2026-09-03';
 
-export const BUILD_FEE = `$${pricing.buildFee}`;
-export const MONTHLY_FEE = `$${pricing.monthlyFee}`;
+export const BUILD_FEE = formatMoney(pricingFor('en').buildFee);
+export const MONTHLY_FEE = formatMoney(pricingFor('en').monthlyFee);
 export const TURNAROUND = `${pricing.demoTurnaroundHours} hours`;
 
 /** Absolute URL for a path on the canonical origin. */

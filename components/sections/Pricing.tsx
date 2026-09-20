@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react';
-import { getTranslations } from 'next-intl/server';
-import { pricing } from '@/content/site';
+import { getLocale, getTranslations } from 'next-intl/server';
+import { pricingFor } from '@/content/site';
 import { formatMoney } from '@/lib/money';
 import { pricingIncludeKeys, pricingTeaserIncludeKeys } from '@/content/sections';
 import { cn } from '@/lib/utils';
@@ -15,7 +15,7 @@ import type { SectionVariant } from './variant';
 
 /**
  * One offer, stated plainly. Growth and Authority plans and the add-on menu are
- * deliberately absent — never present three options; for a $500 decision,
+ * deliberately absent — never present three options; for a €450 decision,
  * choice is friction.
  *
  * The two numbers are the thing a visitor scrolls for, so they are the largest
@@ -29,6 +29,7 @@ import type { SectionVariant } from './variant';
 export async function PricingSection({ variant = 'page' }: { variant?: SectionVariant }) {
   const t = await getTranslations('home.pricing');
   const tCta = await getTranslations('cta');
+  const fees = pricingFor(await getLocale());
 
   const isTeaser = variant === 'teaser';
 
@@ -63,12 +64,12 @@ export async function PricingSection({ variant = 'page' }: { variant?: SectionVa
             <div className="flex flex-col gap-6">
               <div className="grid grid-cols-2">
                 <Price
-                  amount={formatMoney(pricing.buildFee)}
+                  amount={formatMoney(fees.buildFee)}
                   label={t('buildLabel')}
                   className="pr-4 sm:pr-8"
                 />
                 <Price
-                  amount={formatMoney(pricing.monthlyFee)}
+                  amount={formatMoney(fees.monthlyFee)}
                   suffix={t('monthlySuffix')}
                   label={t('monthlyLabel')}
                   className="border-l border-line pl-4 sm:pl-8"

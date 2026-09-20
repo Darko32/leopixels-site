@@ -73,7 +73,7 @@ const SEARCH_BOTS = [
 /**
  * AI answer engines and training crawlers. Allowed on purpose.
  *
- * The buyer for a $500 trades website increasingly asks ChatGPT, Claude or
+ * The buyer for a €450 trades website increasingly asks ChatGPT, Claude or
  * Perplexity "who builds cheap websites for plumbers" instead of typing it into
  * Google. Blocking these removes LeoPixels from those answers and returns
  * nothing in exchange — there is no paid tier being protected and no

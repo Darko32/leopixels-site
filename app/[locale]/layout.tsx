@@ -52,7 +52,7 @@ export async function generateMetadata({
             // whole pitch, so they need the large treatment.
             'max-image-preview': 'large',
             // Uncapped snippet length. The default cap truncates the offer
-            // mid-sentence in the SERP — "$500 to build, $149 a…".
+            // mid-sentence in the SERP — "€450 to build, €99 a…".
             'max-snippet': -1,
             'max-video-preview': -1,
           },

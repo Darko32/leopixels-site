@@ -45,7 +45,7 @@
   "home": {
     "meta": {
       "title": "Websites for trades businesses — see yours before you pay",
-      "description": "One-page websites for plumbers, HVAC, electricians and roofers. We build a working demo of your site in 48 hours, free. $500 to build, $149 a month, and you own everything."
+      "description": "One-page websites for plumbers, HVAC, electricians and roofers. We build a working demo of your site in 48 hours, free. €450 to build, €99 a month, and you own everything."
     },
 
     "hero": {
@@ -56,7 +56,7 @@
       "badges": {
         "one": "Demo in 48 hours",
         "two": "You own the domain and files",
-        "three": "$500 build · $149/month"
+        "three": "€450 build · €99/month"
       }
     },
 
@@ -77,7 +77,7 @@
     "roi": {
       "eyebrow": "The arithmetic",
       "title": "One Google Ads lead can cost more than a month with us.",
-      "lead": "In the trades, one lead through Google Ads runs $100 to $250. A month with us is $149 — hosting, your domain, every change you ask for, and the local SEO that gets you found in the first place.",
+      "lead": "In the trades, one lead through Google Ads runs $100 to $250. A month with us is €99 — hosting, your domain, every change you ask for, and the local SEO that gets you found in the first place.",
       "point": "If it brings you two jobs in the first month, it has already paid for itself. After that it works twenty-four hours a day for about the price of one billable hour.",
       "compare": {
         "ads": {
@@ -156,7 +156,7 @@
 
     "pricing": {
       "eyebrow": "Pricing",
-      "title": "$500 to build. $149 a month.",
+      "title": "€450 to build. €99 a month.",
       "lead": "One price, stated plainly. No platform fee, no separate hosting bill, nothing that appears later.",
       "buildLabel": "One-time build",
       "monthlyLabel": "Hosting, domain and edits",
@@ -229,7 +229,7 @@
           "a": "AI-accelerated, yes — that's exactly why it can be live this week at this price. But it's built for your business specifically: your services, your photos, your town's search terms, and every build is finished and checked by hand."
         },
         "forever": {
-          "q": "$149 a month, forever?",
+          "q": "€99 a month, forever?",
           "a": "It covers your hosting, your domain, every change you want and keeping the site fast and findable. Most owners compare it to one hour of their own time. And you can cancel whenever you like."
         },
         "cancel": {
@@ -276,8 +276,8 @@
 
   "pricingPage": {
     "meta": {
-      "title": "Pricing — $500 to build, $149 a month",
-      "description": "One price, stated plainly. $500 to build the site and $149 a month for hosting, your domain, unlimited small edits and a quarterly refresh. Cancel any time and keep the domain."
+      "title": "Pricing — €450 to build, €99 a month",
+      "description": "One price, stated plainly. €450 to build the site and €99 a month for hosting, your domain, unlimited small edits and a quarterly refresh. Cancel any time and keep the domain."
     }
   },
 

@@ -1,4 +1,4 @@
-import { pricing, site } from '@/content/site';
+import { pricing, site, pricingFor } from '@/content/site';
 import { routing, type Locale } from '@/i18n/routing';
 import { absoluteUrl } from './seo';
 
@@ -50,6 +50,8 @@ export function websiteSchema(locale: Locale, name: string): Json {
 
 /** Public pricing is a genuine rich-result advantage in a niche that hides it. */
 export function serviceSchema(locale: Locale, name: string, description: string): Json {
+  const fees = pricingFor(locale);
+
   return {
     '@context': 'https://schema.org',
     '@type': 'Service',
@@ -62,7 +64,7 @@ export function serviceSchema(locale: Locale, name: string, description: string)
       {
         '@type': 'Offer',
         name: 'Website build',
-        price: String(pricing.buildFee),
+        price: String(fees.buildFee),
         priceCurrency: pricing.currency,
       },
       {
@@ -71,7 +73,7 @@ export function serviceSchema(locale: Locale, name: string, description: string)
         priceCurrency: pricing.currency,
         priceSpecification: {
           '@type': 'UnitPriceSpecification',
-          price: String(pricing.monthlyFee),
+          price: String(fees.monthlyFee),
           priceCurrency: pricing.currency,
           billingIncrement: 1,
           unitCode: 'MON',

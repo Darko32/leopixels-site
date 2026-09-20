@@ -71,10 +71,24 @@ export const adsLeadCost = {
   max: 250,
 } as const;
 
-/** The offer. One place, both locales, formatted through Intl. */
+/**
+ * The offer. Priced per locale: the English and Macedonian sites sell into
+ * different markets, so they carry different amounts in the same currency
+ * rather than one amount converted into another.
+ *
+ * Read it through `pricingFor(locale)`. Nothing should reach into a locale's
+ * figures directly, or the two pages drift the first time one of them changes.
+ */
 export const pricing = {
-  buildFee: 500,
-  monthlyFee: 149,
-  currency: 'USD',
+  currency: 'EUR',
   demoTurnaroundHours: 48,
+  byLocale: {
+    en: { buildFee: 450, monthlyFee: 99 },
+    mk: { buildFee: 139, monthlyFee: 20 },
+  },
 } as const;
+
+/** Anything but `mk` gets the English figures — the default locale is unprefixed. */
+export function pricingFor(locale: string) {
+  return locale === 'mk' ? pricing.byLocale.mk : pricing.byLocale.en;
+}
